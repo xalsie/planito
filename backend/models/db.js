@@ -13,11 +13,7 @@ const sequelize = new Sequelize(
 (async () => {
   try {
     await sequelize.authenticate();
-    require("./user");
     console.log("Connexion à la base de données établie avec succès.");
-
-    await sequelize.sync({ force: true });
-    console.log("Toutes les tables ont été créées avec succès.");
   } catch (error) {
     console.error("Impossible de se connecter à la base de données :", error);
   } finally {

@@ -1,5 +1,5 @@
 require("dotenv").config();
-require("./models/db-sql");
+require("./models/db");
 const path = require("node:path");
 const cors = require("cors");
 const express = require("express");

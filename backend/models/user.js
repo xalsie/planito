@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const { DataTypes } = require("sequelize");
 
-const sequelize = require("./db-sql");
+const sequelize = require("./db");
 
 const User = sequelize.define(
   "user",
