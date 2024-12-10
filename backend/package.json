@@ -6,7 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch index.js",
     "migrate": "node migration.js"
-
   },
   "author": "",
   "license": "ISC",
