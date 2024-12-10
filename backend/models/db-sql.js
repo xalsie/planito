@@ -10,11 +10,20 @@ const sequelize = new Sequelize(
   }
 );
 
-try {
-  sequelize.authenticate();
-  console.log("Connection has been established successfully.");
-} catch (error) {
-  console.error("Unable to connect to the database:", error);
-}
+(async () => {
+  try {
+    await sequelize.authenticate();
+    require("./user");
+    console.log("Connexion à la base de données établie avec succès.");
+
+    await sequelize.sync({ force: true });
+    console.log("Toutes les tables ont été créées avec succès.");
+  } catch (error) {
+    console.error("Impossible de se connecter à la base de données :", error);
+  } finally {
+    await sequelize.close();
+    console.log("Connexion à la base de données fermée.");
+  }
+})();
 
 module.exports = sequelize;
