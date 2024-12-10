@@ -1,8 +1,10 @@
 require("dotenv").config();
 require("./models/db");
-const path = require("node:path");
 const cors = require("cors");
 const express = require("express");
+
+const userRoutes = require("./routes/user");
+const moduleRoutes = require("./routes/module");
 
 const port = process.env.PORT;
 
@@ -13,7 +15,7 @@ app.listen(port || 3000, () => {
 });
 
 app.use(express.urlencoded({ extended: true, limit: "16mb" })); // Adjust the limit as needed
-app.use(express.json()); // application/json
+app.use(express.json());
 const corsOptions = {
   origin: process.env.FRONT_URL,
   credentials: true,
@@ -21,7 +23,11 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+app.use("/users", userRoutes);
+app.use("/modules", moduleRoutes);
+
 app.use((error, req, res, next) => {
+  console.error("Error occurred:", error); // Affiche l'erreur dans les logs
   const status = error.statusCode || 500;
   const message = error.message;
   const data = error.data;

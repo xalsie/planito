@@ -4,34 +4,34 @@ const { DataTypes } = require("sequelize");
 
 const sequelize = require("./db");
 
-const User = sequelize.define(
-  "user",
+const Module = sequelize.define(
+  "module",
   {
     id: {
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
     },
-    firstName: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lastName: {
-      type: DataTypes.STRING,
+    volHours: {
+      type: DataTypes.DECIMAL(4, 1),
       allowNull: false,
     },
-    email: {
-      type: DataTypes.STRING,
+    nbClasses: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    nbCc: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
     },
-    password: {
-      type: DataTypes.STRING,
+    volExams: {
+      type: DataTypes.DECIMAL(3, 1),
       allowNull: false,
-    },
-    roles: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: true,
     },
   },
   {
@@ -43,4 +43,4 @@ const User = sequelize.define(
   }
 );
 
-module.exports = User;
+module.exports = Module;
