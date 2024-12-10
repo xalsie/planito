@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: planito
+    ports:
+      - 5432:5432
+    volumes:
+      - ./backend/postgres:/var/lib/postgresql/data
+
+  backend:
+    image: node:latest
+    container_name: backend
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - 3000:3000
+
+  frontend:
+    image: node:20.0.0-alpine
+    container_name: front
+    ports:
+      - 5173:5173
+    volumes:
+      - type: bind
+        source: ./front
+        target: /app
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host"
+    tty: true
+    restart: on-failure
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    ports:
+      - 8080:8080
