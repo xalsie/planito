@@ -9,6 +9,7 @@ const Class = require("./models/class");
 const Room = require("./models/room");
 const Material = require("./models/material");
 const Event = require("./models/event");
+const UserModule = require("./models/userModule");
 
 School.belongsTo(User, {
   foreignKey: "user_id",
@@ -47,6 +48,16 @@ Event.belongsTo(Material, {
 
 Event.belongsTo(Class, {
   foreignKey: "class_id",
+  onDelete: "CASCADE",
+});
+
+UserModule.belongsTo(User, {
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
+
+UserModule.belongsTo(Module, {
+  foreignKey: "module_id",
   onDelete: "CASCADE",
 });
 
