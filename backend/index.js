@@ -10,13 +10,14 @@ const materialRoutes = require("./routes/material");
 const eventRoutes = require("./routes/event.route");
 const schoolRoutes = require("./routes/school");
 const authRoutes = require("./routes/auth");
+const userModuleRoutes = require("./routes/userModule");
 
 const port = process.env.PORT;
 
 const app = express();
 
 app.listen(port || 3000, () => {
-  console.log(`Planito app listening on port ${port}`);
+  console.log(`Planito app listening on port http://localhost:${port}/`);
 });
 
 app.use(express.urlencoded({ extended: true, limit: "16mb" })); // Adjust the limit as needed
@@ -35,6 +36,7 @@ app.use("/api/materials", materialRoutes);
 app.use("/events", eventRoutes);
 app.use("/schools", schoolRoutes);
 app.use("/auth", authRoutes);
+app.use("/userModule", userModuleRoutes);
 
 app.use((error, req, res, next) => {
   console.error("Error occurred:", error); // Affiche l'erreur dans les logs
