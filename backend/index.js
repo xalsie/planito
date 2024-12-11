@@ -7,10 +7,11 @@ const userRoutes = require("./routes/user");
 const moduleRoutes = require("./routes/module");
 const roomRoutes = require("./routes/room");
 const materialRoutes = require("./routes/material");
-const eventRoutes = require("./routes/event.route");
+const eventRoutes = require("./routes/event");
 const schoolRoutes = require("./routes/school");
 const authRoutes = require("./routes/auth");
 const userModuleRoutes = require("./routes/userModule");
+const classRoutes = require("./routes/class");
 
 const port = process.env.PORT;
 
@@ -37,6 +38,7 @@ app.use("/events", eventRoutes);
 app.use("/schools", schoolRoutes);
 app.use("/auth", authRoutes);
 app.use("/userModule", userModuleRoutes);
+app.use("/classes", classRoutes);
 
 app.use((error, req, res, next) => {
   console.error("Error occurred:", error); // Affiche l'erreur dans les logs
