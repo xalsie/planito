@@ -5,6 +5,8 @@ const express = require("express");
 
 const userRoutes = require("./routes/user");
 const moduleRoutes = require("./routes/module");
+const roomRoutes = require("./routes/room");
+const materialRoutes = require("./routes/material");
 const eventRoutes = require("./routes/event.route");
 const schoolRoutes = require("./routes/school");
 
@@ -27,6 +29,8 @@ app.use(cors(corsOptions));
 
 app.use("/users", userRoutes);
 app.use("/modules", moduleRoutes);
+app.use("/api/rooms", roomRoutes);
+app.use("/api/materials", materialRoutes);
 app.use("/events", eventRoutes);
 app.use("/schools", schoolRoutes);
 

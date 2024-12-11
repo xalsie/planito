@@ -15,4 +15,24 @@ School.belongsTo(User, {
     onDelete: 'CASCADE',
   });
 
+const Room = require('./models/room');
+
+const Material = require('./models/material');
+
+Room.belongsTo(User, {
+    foreignKey: 'school_id',
+    onDelete: 'CASCADE'
+  });
+  User.hasMany(Room, {
+    foreignKey: 'school_id'
+  });
+  
+  Material.belongsTo(User, {
+    foreignKey: 'school_id',
+    onDelete: 'CASCADE'
+  });
+  User.hasMany(Material, {
+    foreignKey: 'school_id'
+  });
+
 sequelize.sync({ alter: true });
