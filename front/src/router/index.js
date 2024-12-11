@@ -1,6 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DashboardIntervenantView from '../views/DashboardIntervenantView.vue'
 import DashboardSchoolView from '../views/DashboardSchoolView.vue'
+import CalendrierView from '../views/intervenant/CalendrierView.vue'
+import ImportCalendrierView from '../views/intervenant/ImportCalendrierView.vue'
+import DisponibiliteView from '../views/intervenant/DisponibiliteView.vue'
+import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,9 +16,41 @@ const router = createRouter({
             redirect: '/dashboard/intervenant'
         },
         {
+            path: '/home',
+            name: 'home',
+            component: HomeView
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: LoginView
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: RegisterView
+        },
+        {
             path: '/dashboard/intervenant',
             name: 'dashboard-intervenant',
-            component: DashboardIntervenantView
+            component: DashboardIntervenantView,
+            children: [
+                {
+                    path: '',
+                    name: 'intervenant-calendrier',
+                    component: CalendrierView
+                },
+                {
+                    path: 'import',
+                    name: 'intervenant-import',
+                    component: ImportCalendrierView
+                },
+                {
+                    path: 'disponibilite',
+                    name: 'intervenant-disponibilite',
+                    component: DisponibiliteView
+                }
+            ]
         },
         {
             path: '/dashboard/ecole',
