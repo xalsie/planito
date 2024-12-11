@@ -4,6 +4,8 @@ const path = require("node:path");
 const cors = require("cors");
 const express = require("express");
 
+const eventRoutes = require("./routes/event.route");
+
 const port = process.env.PORT;
 
 const app = express();
@@ -20,6 +22,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+app.use("/events", eventRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
