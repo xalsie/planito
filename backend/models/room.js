@@ -14,6 +14,10 @@ const Room = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    school_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
   },
   {
     hooks: {

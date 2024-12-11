@@ -3,20 +3,29 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("./db");
 
 const Class = sequelize.define(
-    "class",
-    {
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        }
+  "classes",
+  {
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
     },
-    {
-        hooks: {
-            beforeValidate: (user, options) => {
-                user.id = uuidv4();
-            },
-        },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    school_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
     }
+  },
+  {
+    hooks: {
+      beforeValidate: (classes, options) => {
+        classes.id = uuidv4();
+      },
+    },
+  }
 );
 
 module.exports = Class;

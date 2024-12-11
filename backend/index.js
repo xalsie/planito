@@ -32,8 +32,8 @@ app.use(cors(corsOptions));
 
 app.use("/users", userRoutes);
 app.use("/modules", moduleRoutes);
-app.use("/api/rooms", roomRoutes);
-app.use("/api/materials", materialRoutes);
+app.use("/rooms", roomRoutes);
+app.use("/materials", materialRoutes);
 app.use("/events", eventRoutes);
 app.use("/schools", schoolRoutes);
 app.use("/auth", authRoutes);

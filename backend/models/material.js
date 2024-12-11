@@ -19,6 +19,10 @@ const Material = sequelize.define(
       allowNull: false,
       defaultValue: 0,
     },
+    school_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
   },
   {
     hooks: {
