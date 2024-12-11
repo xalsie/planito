@@ -10,55 +10,71 @@ const Room = require("./models/room");
 const Material = require("./models/material");
 const Event = require("./models/event");
 const UserModule = require("./models/userModule");
+const ModuleClass = require("./models/moduleClass");
 
 School.belongsTo(User, {
-  foreignKey: "user_id",
-  onDelete: "CASCADE",
+    foreignKey: "user_id",
+    onDelete: "CASCADE",
 });
 
 Room.belongsTo(School, {
-  foreignKey: "school_id",
-  onDelete: "CASCADE",
+    foreignKey: "school_id",
+    onDelete: "CASCADE",
 });
 
 Material.belongsTo(School, {
-  foreignKey: "school_id",
-  onDelete: "CASCADE",
+    foreignKey: "school_id",
+    onDelete: "CASCADE",
 });
 
 Event.belongsTo(Room, {
-  foreignKey: "room_id",
-  onDelete: "CASCADE",
+    foreignKey: "room_id",
+    onDelete: "CASCADE",
 });
 
 Event.belongsTo(User, {
-  foreignKey: "user_id",
-  onDelete: "CASCADE",
+    foreignKey: "user_id",
+    onDelete: "CASCADE",
 });
 
 Event.belongsTo(Module, {
-  foreignKey: "module_id",
-  onDelete: "CASCADE",
+    foreignKey: "module_id",
+    onDelete: "CASCADE",
 });
 
 Event.belongsTo(Material, {
-  foreignKey: "material_id",
-  onDelete: "CASCADE",
+    foreignKey: "material_id",
+    onDelete: "CASCADE",
 });
 
 Event.belongsTo(Class, {
-  foreignKey: "class_id",
-  onDelete: "CASCADE",
+    foreignKey: "class_id",
+    onDelete: "CASCADE",
 });
 
 UserModule.belongsTo(User, {
-  foreignKey: "user_id",
-  onDelete: "CASCADE",
+    foreignKey: "user_id",
+    onDelete: "CASCADE",
 });
 
 UserModule.belongsTo(Module, {
-  foreignKey: "module_id",
-  onDelete: "CASCADE",
+    foreignKey: "module_id",
+    onDelete: "CASCADE",
+});
+
+ModuleClass.belongsTo(Module, {
+    foreignKey: "module_id",
+    onDelete: "CASCADE",
+});
+
+ModuleClass.belongsTo(Class, {
+    foreignKey: "class_id",
+    onDelete: "CASCADE",
+});
+
+Module.belongsTo(User, {
+    foreignKey: "user_id",
+    onDelete: "CASCADE",
 });
 
 sequelize.sync({ alter: true });

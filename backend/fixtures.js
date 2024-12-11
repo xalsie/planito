@@ -1,18 +1,17 @@
 require("dotenv").config();
 const { faker, fi } = require('@faker-js/faker');
+const bcrypt = require("bcryptjs");
+const { EventType } = require('./enum');
+
 const User = require('./models/user');
 const School = require('./models/school');
 const Room = require('./models/room');
-const bcrypt = require("bcryptjs");
 const Class = require('./models/class');
 const Module = require('./models/module');
 const Event = require('./models/event');
-const { EventType } = require('./enum');
+const ModuleClass = require('./models/moduleClass');
 
 require('./models/db');
-
-
-
 
 async function generateFixtures() {
   try {
@@ -20,7 +19,6 @@ async function generateFixtures() {
     const users = [];
     for (let i = 0; i < 5; i++) {
       const hashedPw = await bcrypt.hash('test', 12);
-
 
       const user = new User({
         firstName: faker.person.firstName(),
@@ -39,7 +37,7 @@ async function generateFixtures() {
       const school = new School({
         name: faker.company.name() + " School",
         address: faker.location.streetAddress(),
-        interval: faker.helpers.arrayElement([30, 60, 90]), 
+        interval: faker.helpers.arrayElement([30, 60, 90]),
         opening_hours: '08:00:00',
         closing_hours: '17:00:00',
         user_id: faker.helpers.arrayElement(users).id
@@ -48,7 +46,7 @@ async function generateFixtures() {
       await school.save();
       schools.push(school);
     }
-    
+
     // Create  15 rooms
     const rooms = [];
     for (let i = 0; i < 15; i++) {
@@ -92,7 +90,7 @@ async function generateFixtures() {
     for (let i = 0; i < 20; i++) {
       const start = getRandomWeekdayInDecember();
       const end = new Date(start.getTime() + 90 * 60 * 1000);
-      
+
 
       const type = faker.helpers.arrayElement(Object.values(EventType));
       let event;
@@ -135,7 +133,7 @@ async function generateFixtures() {
             class_id: faker.helpers.arrayElement(classes).id,
           });
         }
-      }else if (type === EventType.COURSE || type === EventType.EXAM) {
+      } else if (type === EventType.COURSE || type === EventType.EXAM) {
         event = new Event({
           start,
           end,
@@ -160,9 +158,20 @@ async function generateFixtures() {
           class_id: null,
         });
       }
-      
+
       await event.save();
       events.push(event);
+    }
+
+    // create 10 module classes
+    for (let i = 0; i < 10; i++) {
+      const moduleClass = new ModuleClass({
+        module_id: faker.helpers.arrayElement(modules).id,
+        class_id: faker.helpers.arrayElement(classes).id,
+        user_id: faker.helpers.arrayElement(users).id,
+      });
+
+      await moduleClass.save();
     }
 
     console.log("Fixtures successfully generated!");
@@ -172,7 +181,7 @@ async function generateFixtures() {
 }
 
 function isWeekday(date) {
-  const day = date.getDay(); 
+  const day = date.getDay();
   return day !== 0 && day !== 6;
 }
 
@@ -181,18 +190,15 @@ function getRandomWeekdayInDecember() {
   do {
     // Générer une date aléatoire en décembre
     randomDate = faker.date.between({ from: '2024-12-01T00:00:00.000Z', to: '2024-12-31T23:59:59.999Z' });
-  } while (!isWeekday(randomDate)); 
+  } while (!isWeekday(randomDate));
 
-  const validMinutes = [0, 15, 30, 45]; 
-  const randomHour = faker.number.int({ min: 8, max: 18 }); 
-  const randomMinute = faker.helpers.arrayElement(validMinutes); 
+  const validMinutes = [0, 15, 30, 45];
+  const randomHour = faker.number.int({ min: 8, max: 18 });
+  const randomMinute = faker.helpers.arrayElement(validMinutes);
 
-  randomDate.setHours(randomHour, randomMinute, 0, 0); 
+  randomDate.setHours(randomHour, randomMinute, 0, 0);
 
   return randomDate;
 }
 
-
-
 generateFixtures();
-

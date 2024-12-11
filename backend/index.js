@@ -12,6 +12,7 @@ const schoolRoutes = require("./routes/school");
 const authRoutes = require("./routes/auth");
 const userModuleRoutes = require("./routes/userModule");
 const classRoutes = require("./routes/class");
+const moduleClassRoutes = require("./routes/moduleClass");
 
 const port = process.env.PORT;
 
@@ -23,6 +24,7 @@ app.listen(port || 3000, () => {
 
 app.use(express.urlencoded({ extended: true, limit: "16mb" })); // Adjust the limit as needed
 app.use(express.json());
+
 const corsOptions = {
   origin: process.env.FRONT_URL,
   credentials: true,
@@ -39,6 +41,7 @@ app.use("/schools", schoolRoutes);
 app.use("/auth", authRoutes);
 app.use("/userModules", userModuleRoutes);
 app.use("/classes", classRoutes);
+app.use("/moduleClasses", moduleClassRoutes);
 
 app.use((error, req, res, next) => {
   console.error("Error occurred:", error); // Affiche l'erreur dans les logs
