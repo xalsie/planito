@@ -13,15 +13,9 @@
 							<label for="email" class="block mb-2 text-sm font-medium text-gray-700 font-poppins">
 								Adresse email
 							</label>
-							<input 
-								type="email" 
-								name="email" 
-								id="email" 
-								v-model="email"
-								placeholder="exemple@email.com" 
+							<input type="email" name="email" id="email" v-model="email" placeholder="exemple@email.com"
 								class="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-poppins"
-								required
-							>
+								required>
 						</div>
 
 						<div>
@@ -33,29 +27,23 @@
 									Mot de passe oublié ?
 								</a>
 							</div>
-							<input 
-								type="password" 
-								name="password" 
-								id="password" 
-								v-model="password"
-								placeholder="••••••••" 
+							<input type="password" name="password" id="password" v-model="password"
+								placeholder="••••••••"
 								class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-poppins"
-								required
-							>
+								required>
 						</div>
 					</div>
 
 					<div class="space-y-6">
-						<button 
-							type="submit" 
-							class="w-full bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors font-poppins"
-						>
+						<button type="submit"
+							class="w-full bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors font-poppins">
 							SE CONNECTER
 						</button>
 
 						<p class="text-center text-sm text-gray-600 font-poppins">
 							Pas encore de compte ?
-							<router-link to="/inscription" class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
+							<router-link to="/inscription"
+								class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
 								S'inscrire
 							</router-link>
 						</p>
@@ -71,4 +59,4 @@ import { ref } from 'vue'
 
 const email = ref('')
 const password = ref('')
-</script> 
+</script>
