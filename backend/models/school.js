@@ -33,6 +33,10 @@ const School = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    user_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
     
    
   },
