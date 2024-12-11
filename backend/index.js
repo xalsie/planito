@@ -37,7 +37,7 @@ app.use("/api/materials", materialRoutes);
 app.use("/events", eventRoutes);
 app.use("/schools", schoolRoutes);
 app.use("/auth", authRoutes);
-app.use("/userModule", userModuleRoutes);
+app.use("/userModules", userModuleRoutes);
 app.use("/classes", classRoutes);
 
 app.use((error, req, res, next) => {

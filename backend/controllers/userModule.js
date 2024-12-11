@@ -8,13 +8,14 @@ exports.create = async (req, res, next) => {
       next(error);
     }
 
-    const { userId, settings } = req.body;
+    const { moduleId, userId, settings } = req.body;
 
     console.log("userId", userId);
 
     const [userModule, created] = await UserModule.findOrCreate({
-      where: { user_id: userId, settings: settings },
+      where: { module_id: moduleId, user_id: userId, settings: settings },
       defaults: {
+        module_id: moduleId,
         user_id: userId,
         settings: settings,
       },
@@ -38,25 +39,25 @@ exports.create = async (req, res, next) => {
 
 exports.getAllByUserId = async (req, res, next) => {
   try {
-    if (!req.params || !req.params.id) {
+    if (!req.params || !req.params.userId) {
       const error = new Error("Invalid data");
       error.statusCode = 400;
       throw error;
     }
-    const userId = req.params.id;
+    const userId = req.params.userId;
     const userModule = await UserModule.findAll({ where: { user_id: userId } });
     if (!userModule) {
       const error = new Error("UserModule not found");
       error.statusCode = 404;
-      next(error);
+      throw error;
     }
 
     res.status(200).json(userModule).end();
   } catch (err) {
-    console.error("Error in getAllUserModule:", err.message);
-    const error = new Error("An error occurred while processing the request.");
-    error.statusCode = 500;
-    next(error);
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
 };
 
