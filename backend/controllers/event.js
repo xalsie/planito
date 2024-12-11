@@ -1,4 +1,4 @@
-const Event = require('../models/event.models');
+const Event = require('../models/event');
 
 const find = async (req, res, next) => {
     try {

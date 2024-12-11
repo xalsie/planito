@@ -7,7 +7,7 @@ const userRoutes = require("./routes/user");
 const moduleRoutes = require("./routes/module");
 const roomRoutes = require("./routes/room");
 const materialRoutes = require("./routes/material");
-const eventRoutes = require("./routes/event.route");
+const eventRoutes = require("./routes/event");
 const schoolRoutes = require("./routes/school");
 const authRoutes = require("./routes/auth");
 
@@ -30,8 +30,8 @@ app.use(cors(corsOptions));
 
 app.use("/users", userRoutes);
 app.use("/modules", moduleRoutes);
-app.use("/api/rooms", roomRoutes);
-app.use("/api/materials", materialRoutes);
+app.use("/rooms", roomRoutes);
+app.use("/materials", materialRoutes);
 app.use("/events", eventRoutes);
 app.use("/schools", schoolRoutes);
 app.use("/auth", authRoutes);
