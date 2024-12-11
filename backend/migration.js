@@ -11,6 +11,7 @@ const Material = require("./models/material");
 const Event = require("./models/event");
 const UserModule = require("./models/userModule");
 const UserSchool = require("./models/userSchool");
+const ModuleClass = require("./models/moduleClass");
 
 School.belongsTo(User, {
   foreignKey: "user_id",
@@ -53,9 +54,9 @@ Event.belongsTo(Class, {
 });
 
 User.hasMany(UserModule, {
-    foreignKey: "user_id",
-    onDelete: "CASCADE",
-  });
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
 
 UserModule.belongsTo(User, {
   foreignKey: "user_id",
@@ -67,10 +68,25 @@ UserModule.belongsTo(Module, {
   onDelete: "CASCADE",
 });
 
+ModuleClass.belongsTo(Module, {
+  foreignKey: "module_id",
+  onDelete: "CASCADE",
+});
+
+ModuleClass.belongsTo(Class, {
+  foreignKey: "class_id",
+  onDelete: "CASCADE",
+});
+
+Module.belongsTo(User, {
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
+
 User.hasMany(UserSchool, {
-    foreignKey: "user_id",
-    onDelete: "CASCADE",
-  });
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
 UserSchool.belongsTo(User, {
   foreignKey: "user_id",
   onDelete: "CASCADE",
@@ -80,7 +96,6 @@ UserSchool.belongsTo(School, {
   foreignKey: "school_id",
   onDelete: "CASCADE",
 });
-
 
 Module.belongsTo(School, {
   foreignKey: "school_id",
