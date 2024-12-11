@@ -1,31 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/LoginView.vue'
-import RegisterView from '../views/RegisterView.vue'
-import DashboardView from '../views/DashboardView.vue'
+import DashboardIntervenantView from '../views/DashboardIntervenantView.vue'
+import DashboardSchoolView from '../views/DashboardSchoolView.vue'
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: HomeView
+            redirect: '/dashboard/intervenant'
         },
         {
-            path: '/connexion',
-            name: 'login',
-            component: LoginView
+            path: '/dashboard/intervenant',
+            name: 'dashboard-intervenant',
+            component: DashboardIntervenantView
         },
         {
-            path: '/inscription',
-            name: 'register',
-            component: RegisterView
-        },
-        {
-            path: '/dashboard',
-            name: 'dashboard',
-            component: DashboardView
+            path: '/dashboard/ecole',
+            name: 'dashboard-ecole',
+            component: DashboardSchoolView
         }
     ]
 })
