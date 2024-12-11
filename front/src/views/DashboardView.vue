@@ -69,7 +69,12 @@
 
 <script setup>
 import { ref } from 'vue'
+import DashboardSidebar from '../components/DashboardSidebar.vue'
 
+const user = ref({
+  name: 'Monsieur prof man',
+  role: 'Intervenant'
+})
 const user = ref({
   name: 'Monsieur prof man',
   role: 'Intervenant'
