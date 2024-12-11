@@ -16,10 +16,7 @@ const sequelize = new Sequelize(
     console.log("Connexion à la base de données établie avec succès.");
   } catch (error) {
     console.error("Impossible de se connecter à la base de données :", error);
-  } finally {
-    await sequelize.close();
-    console.log("Connexion à la base de données fermée.");
-  }
+  } 
 })();
 
 module.exports = sequelize;
