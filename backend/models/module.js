@@ -20,24 +20,20 @@ const Module = sequelize.define(
       type: DataTypes.DECIMAL(4, 1),
       allowNull: false,
     },
-    nbClasses: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     nbCc: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
     },
     volExams: {
-      type: DataTypes.DECIMAL(3, 1),
+      type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 120,
     },
   },
   {
     hooks: {
-      beforeValidate: (user, options) => {
-        user.id = uuidv4();
+      beforeValidate: (module, options) => {
+        module.id = uuidv4();
       },
     },
   }
