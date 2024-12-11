@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.get("/", eventController.find);
 router.post("/create", eventController.create);
-router.get("/:userId", eventController.findById);
-router.patch("/:userId", eventController.updateById);
-router.delete("/:userId", eventController.deleteById);
+router.get("/:eventId", eventController.findById);
+router.patch("/:eventId", eventController.updateById);
+router.delete("/:eventId", eventController.deleteById);
 
 module.exports = router;

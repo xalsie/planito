@@ -2,8 +2,12 @@ const Event = require('../models/event.models');
 
 const find = async (req, res, next) => {
     try {
-        const users = await User.findAll();
-        res.status(200).json(users);
+        const events = await Event.findAll();
+        if (!events) {
+            res.status(404).json('User not found');
+            return;
+        }
+        res.status(200).json(events);
     } catch (err) {
         res.status(500).json(err);
     }
@@ -12,26 +16,26 @@ const find = async (req, res, next) => {
 const findById = async (req, res, next) => {
     const userId = req.params.userId;
     try {
-        const user = await User.findByPk(userId);
-        if (!user) {
-            const error = new Error('User not found');
-            error.statusCode = 404;
-            throw error;
+        const event = await Event.findByPk(userId);
+        if (!event) {
+            res.status(404).json('User not found');
+            return;
         }
-        res.status(200).json(user);
+        res.status(200).json(event);
     } catch (err) {
         res.status(500).json(err);
     }
 };
 
 const create = async (req, res, next) => {
-    const { title, description, date, location } = req.body;
+    const { title, description, type, start, end } = req.body;
     try {
         const event = await Event.create({
             title,
             description,
-            date,
-            location,
+            type,
+            start,
+            end
         });
         res.status(201).json(event);
     } catch (err) {
@@ -40,36 +44,35 @@ const create = async (req, res, next) => {
 }
 
 const updateById = async (req, res, next) => {
-    const userId = req.params.userId;
-    const { title, description, date, location } = req.body;
+    const eventId = req.params.eventId;
+    const { title, description, type, start, end } = req.body;
     try {
-        const user = await User.findByPk(userId);
-        if (!user) {
-            const error = new Error('User not found');
-            error.statusCode = 404;
-            throw error;
+        const event = await Event.findByPk(eventId);
+        if (!event) {
+            res.status(404).json('User not found');
+            return;
         }
         user.title = title;
         user.description = description;
-        user.date = date;
-        user.location = location;
+        user.type = type;
+        user.start = start;
+        user.end = end;
         await user.save();
-        res.status(200).json(user);
+        res.status(200).json(event);
     } catch (err) {
         res.status(500).json(err);
     }
 };
 
 const deleteById = async (req, res, next) => {
-    const userId = req.params.userId;
+    const eventId = req.params.eventId;
     try {
-        const user = await User.findByPk(userId);
-        if (!user) {
-            const error = new Error('User not found');
-            error.statusCode = 404;
-            throw error;
+        const event = await Event.findByPk(eventId);
+        if (!event) {
+            res.status(404).json('User not found');
+            return;
         }
-        await user.destroy();
+        await event.destroy();
         res.status(204).json();
     } catch (err) {
         res.status(500).json(err);
