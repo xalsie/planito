@@ -1,16 +1,14 @@
-const User = require("../models/user");
-const bcrypt = require("bcryptjs");
+const Module = require("../models/module");
 
 exports.create = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, password, roles } = req.body;
-    const hashedPw = await bcrypt.hash(password, 12);
-    await User.create({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: hashedPw,
-      roles: roles,
+    const { name, volHours, nbClasses, nbCc, volExams } = req.body;
+    await Module.create({
+      name: name,
+      volHours: volHours,
+      nbClasses: nbClasses,
+      nbCc: nbCc,
+      volExams: volExams,
     });
     res.sendStatus(201);
   } catch (err) {
@@ -23,8 +21,8 @@ exports.create = async (req, res, next) => {
 
 exports.find = async (req, res, next) => {
   try {
-    const users = await User.findAll();
-    res.status(200).json(users);
+    const modules = await Module.findAll();
+    res.status(200).json(modules);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -35,14 +33,14 @@ exports.find = async (req, res, next) => {
 
 exports.findById = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
-    const user = await User.findByPk(userId);
-    if (!user) {
-      const error = new Error("Could not find user.");
+    const moduleId = req.params.moduleId;
+    const module = await Module.findByPk(moduleId);
+    if (!module) {
+      const error = new Error("Could not find module.");
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json(user);
+    res.status(200).json(module);
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
@@ -53,10 +51,10 @@ exports.findById = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
-    await User.update(req.body, {
+    const moduleId = req.params.moduleId;
+    await Module.update(req.body, {
       where: {
-        id: userId,
+        id: moduleId,
       },
       returning: true,
     });
@@ -71,14 +69,14 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
-    const user = await User.findByPk(userId);
-    if (!user) {
-      const error = new Error("Could not find user.");
+    const moduleId = req.params.moduleId;
+    const module = await Module.findByPk(moduleId);
+    if (!module) {
+      const error = new Error("Could not find module.");
       error.statusCode = 404;
       throw error;
     }
-    await user.destroy();
+    await module.destroy();
     res.sendStatus(204);
   } catch (err) {
     if (!err.statusCode) {
