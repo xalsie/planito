@@ -6,6 +6,7 @@ const express = require("express");
 const userRoutes = require("./routes/user");
 const moduleRoutes = require("./routes/module");
 const eventRoutes = require("./routes/event.route");
+const schoolRoutes = require("./routes/school");
 
 const port = process.env.PORT;
 
@@ -27,6 +28,7 @@ app.use(cors(corsOptions));
 app.use("/users", userRoutes);
 app.use("/modules", moduleRoutes);
 app.use("/events", eventRoutes);
+app.use("/schools", schoolRoutes);
 
 app.use((error, req, res, next) => {
   console.error("Error occurred:", error); // Affiche l'erreur dans les logs
