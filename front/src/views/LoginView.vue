@@ -55,9 +55,9 @@
 
 						<p class="text-center text-sm text-gray-600 font-poppins">
 							Pas encore de compte ?
-							<a href="#" class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
+							<router-link to="/inscription" class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
 								S'inscrire
-							</a>
+							</router-link>
 						</p>
 					</div>
 				</form>
