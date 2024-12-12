@@ -186,15 +186,8 @@ const menuItems = ref([
 const handleLogout = () => {
   const token = localStorage.getItem('token')
   
-  fetch('http://localhost:8000/api/logout', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  }).finally(() => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    router.push('/login')
-  })
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  router.push('/login')
 }
 </script> 

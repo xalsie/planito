@@ -27,7 +27,8 @@ app.use(express.urlencoded({ extended: true, limit: "16mb" })); // Adjust the li
 app.use(express.json());
 
 const corsOptions = {
-  origin: process.env.FRONT_URL,
+  // origin: process.env.FRONT_URL,
+  origin: "*",
   credentials: true,
 };
 
