@@ -30,7 +30,7 @@ exports.create = async (req, res, next) => {
     error.statusCode = 409;
     next(error);
   } catch (err) {
-    console.error("Error in createUserModule:", err.message);
+    console.error("Error in create UserModule:", err.message);
     const error = new Error("An error occurred while processing the request.");
     error.statusCode = 500;
     next(error);
@@ -86,7 +86,7 @@ exports.update = async (req, res, next) => {
     });
     res.sendStatus(200).json(newUserModule).end();
   } catch (err) {
-    console.error("Error in updateUser:", err.message);
+    console.error("Error in update UserModule:", err.message);
     const error = new Error("An error occurred while processing the request.");
     error.statusCode = 500;
     next(error);
@@ -112,7 +112,7 @@ exports.delete = async (req, res, next) => {
     await userModule.destroy();
     res.status(204).end();
   } catch (err) {
-    console.error("Error in deleteUserModule:", err.message);
+    console.error("Error in delete UserModule:", err.message);
     const error = new Error("An error occurred while processing the request.");
     error.statusCode = 500;
     next(error);
