@@ -1,5 +1,6 @@
 const Event = require("../models/event");
 const ical = require("node-ical");
+const EventType = require("../enum");
 
 const find = async (req, res, next) => {
   try {
@@ -90,20 +91,19 @@ const importIcalFromURL = async (req, res, next) => {
     const { url, userId } = req.body;
     console.log("url", url);
 
-    ical.fromURL(url, {}, async function (err, data) {
+    await ical.fromURL(url, {}, async function (err, data) {
       if (err) {
-        console.log("error: ", err);
-        return;
+        const error = new Error(err);
+        error.statusCode = 500;
+        throw error;
       }
+      let count = 0;
       const currentDate = new Date();
-      const endOfNextYear = new Date(currentDate.getFullYear() + 1, 11, 31);
       console.log("data");
 
-      let count = 0;
       for (let k in data) {
         if (data.hasOwnProperty(k)) {
           const ev = data[k];
-          console.log("ev");
 
           if (ev.type === "VEVENT") {
             const startDate = new Date(ev.start);
@@ -122,37 +122,23 @@ const importIcalFromURL = async (req, res, next) => {
             else ++count;
 
             if (startDate >= currentDate /*&& startDate <= endOfNextYear*/) {
-              console.log("before findOrCreate");
-              const [event, created] = await Event.findOrCreate({
-                where: {
-                  title: ev.summary,
-                  description: ev.description,
-                  type: "unavailability",
-                  start: startDate,
-                  end: endDate,
-                  user_id: userId,
-                },
-                defaults: {
-                  title: ev.summary,
-                  description: ev.description,
-                  type: "unavailability",
-                  start: startDate,
-                  end: endDate,
-                  user_id: userId,
-                },
+              console.log("before create");
+              const event = await Event.create({
+                title: ev.summary || "No title",
+                description: ev.description || "No description",
+                type: EventType.UNAVAILABILITY || "No type",
+                start: startDate,
+                end: endDate,
+                user_id: userId,
               });
               console.log("event");
-              if (created) {
-                res.status(201).json(event).end();
-                return;
-              }
-              const error = new Error("Event already exists");
-              error.statusCode = 409;
-              throw error;
+              res.status(201).json(event).end();
+              return;
             }
           }
         }
       }
+      console.log("itérations: ", count);
     });
   } catch (err) {
     if (!err.statusCode) {
