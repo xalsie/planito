@@ -1,6 +1,6 @@
 <template>
     <div v-if="!isOpen" class="flex gap-2 justify-end ">
-        <p>Ajouter une salle</p>
+        <p>Créer un module</p>
         <PlusIcon class="size-6" @click="openModal" />
     </div>
     <div v-if="isOpen" class="flex gap-2 justify-end ">
@@ -8,10 +8,11 @@
         <ArrowLeftIcon class="size-6" @click="openModal" />
     </div>
     <div class="flex justify-center">
-        <Modal v-if="isOpen" title="Créer une salle" description="Créez des salles à votre guise"
-            :placeholders="['Nom de la salle']" saveTitle="Enregistrer" :onClick="createRoom" />
+        <Modal v-if="isOpen" title="Créer un module de cours" description="Créez des modules de cours à votre guise"
+            :placeholders="['Nom du module', 'Volume d\'heures', 'Nombre de CC', 'Volume d\'examens']"
+            saveTitle="Enregistrer" :onClick="createRoom" />
     </div>
-    <Table v-if="!isOpen" title="Liste des salles" :columns="columns" :rows="rows" />
+    <Table v-if="!isOpen" title="Liste des modules" :columns="columns" :rows="rows" />
 </template>
 
 <script setup>
@@ -30,9 +31,9 @@ const openModal = () => {
     isOpen.value = !isOpen.value
 }
 
-const fetchRooms = async () => {
+const fetchModules = async () => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}rooms`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}modules`);
         if (!response.ok) {
             throw new Error('Something went wrong, request failed!');
         }
@@ -46,7 +47,7 @@ const createRoom = async (inputs) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}rooms`, {
             method: 'POST',
-            body: JSON.stringify({ name: inputs[0], schoolId: "99cbdd79-bf3f-42d3-8682-e018da3b6cc1" }), // SCHOOL ID EN DUR EN ATTENDANT
+            body: JSON.stringify({ name: inputs[0] }),
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -63,11 +64,11 @@ const createRoom = async (inputs) => {
 }
 
 onMounted(async () => {
-    rows.value = await fetchRooms();
+    rows.value = await fetchModules();
 })
 
 const columns = [
-    { label: 'Nom de la salle', key: 'name' },
+    { label: 'Nom du module', key: 'name' },
 ];
 
 

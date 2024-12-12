@@ -40,7 +40,7 @@
         <!-- Bouton d'action -->
         <button type="button" class="px-8 py-3 font-semibold rounded-full dark:bg-blue-600 dark:text-gray-50"
             @click="onClick(inputs)">
-            Créer la salle
+            Enregistrer
         </button>
     </div>
 </template>

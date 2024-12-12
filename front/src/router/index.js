@@ -1,12 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import DashboardIntervenantView from "../views/DashboardIntervenantView.vue";
 import DashboardSchoolView from "../views/DashboardSchoolView.vue";
-import CalendrierView from "../views/intervenant/CalendrierView.vue";
-import ImportCalendrierView from "../views/intervenant/ImportCalendrierView.vue";
-import DisponibiliteView from "../views/intervenant/DisponibiliteView.vue";
-import HomeView from "../views/HomeView.vue";
-import LoginView from "../views/LoginView.vue";
-import RegisterView from "../views/RegisterView.vue";
+import IntervenantsListView from "../views/IntervenantsListView.vue";
+import RoomsListView from "../views/RoomsListView.vue";
+import ModulesListView from "../views/ModulesListView.vue";
+import CalendarView from "../views/CalendarView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +54,28 @@ const router = createRouter({
       path: "/dashboard/ecole",
       name: "dashboard-ecole",
       component: DashboardSchoolView,
+      children: [
+        {
+          path: "",
+          name: "calendar",
+          component: CalendarView,
+        },
+        {
+          path: "intervenants",
+          name: "intervenants-list",
+          component: IntervenantsListView,
+        },
+        {
+          path: "salles",
+          name: "rooms-list",
+          component: RoomsListView,
+        },
+        {
+          path: "modules",
+          name: "modules-list",
+          component: ModulesListView,
+        },
+      ],
     },
   ],
 });

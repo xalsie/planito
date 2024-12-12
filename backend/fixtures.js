@@ -12,7 +12,6 @@ const Event = require("./models/event");
 const ModuleClass = require("./models/moduleClass");
 const UserSchool = require("./models/userSchool");
 const UserModule = require("./models/userModule");
-const { EventType } = require("./enum");
 
 require("./models/db");
 
@@ -135,17 +134,6 @@ async function generateFixtures() {
 
       await room.save();
       rooms.push(room);
-    }
-
-    // Create 10 classes
-    const classes = [];
-    for (let i = 0; i < 10; i++) {
-      const _class = new Class({
-        name: faker.helpers.arrayElement(["A", "B", "C", "D", "E", "F"]) + i,
-        school_id: faker.helpers.arrayElement(schools).id,
-      });
-      await _class.save();
-      classes.push(_class);
     }
 
     // create 20 events

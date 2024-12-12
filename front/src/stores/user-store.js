@@ -1,29 +1,38 @@
-//@ts-nocheck
+// stores/userStore.js
 import { defineStore } from "pinia";
-import { ref } from "vue";
 
-export const useUserStore = defineStore("user", () => {
-  const intervenants = ref(null);
+export const useUserStore = defineStore("user", {
+  state: () => ({
+    loggedIn: false,
+    schoolId: "",
+  }),
 
-  const getIntervenantsFromSchool = async (schoolId) => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}${schoolId}`
-      );
-      if (!response.ok) {
-        throw new Error("Something went wrong, request failed!");
+  actions: {
+    async login(email, password) {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}auth/login`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              email: email,
+              password: password,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        userData = await response.json();
+        this.loggedIn = true;
+        this.schoolId = userData.schoolId;
+
+        if (!response.ok) {
+          throw new Error("Something went wrong, request failed!");
+        }
+      } catch (err) {
+        console.log(err);
       }
-
-      if (response.status === 404) {
-        throw new Error("Could not fin intervenants");
-      }
-      intervenants.value = await response.json();
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  return {
-    intervenants,
-  };
+    },
+  },
 });
