@@ -107,11 +107,20 @@ async function generateFixtures() {
       });
       await userSchool.save();
 
-      const userModule = new UserModule({
-        user_id: user.id,
-        module_id: faker.helpers.arrayElement(modules).id,
-      });
-      await userModule.save();
+      for (let j = 0; j < 3; j++) {
+        const userModule = new UserModule({
+          user_id: user.id,
+          module_id: faker.helpers.arrayElement(modules).id,
+        });
+        await userModule.save();
+
+        const moduleClass = new ModuleClass({
+          user_id: user.id,
+          module_id: userModule.module_id,
+          class_id: faker.helpers.arrayElement(classes).id,
+        });
+        await moduleClass.save();
+      }
 
       users.push(user);
     }
@@ -217,17 +226,6 @@ async function generateFixtures() {
 
       await event.save();
       events.push(event);
-    }
-
-    // create 10 module classes
-    for (let i = 0; i < 10; i++) {
-      const moduleClass = new ModuleClass({
-        module_id: faker.helpers.arrayElement(modules).id,
-        class_id: faker.helpers.arrayElement(classes).id,
-        user_id: faker.helpers.arrayElement(users).id,
-      });
-
-      await moduleClass.save();
     }
 
     console.log("Fixtures successfully generated!");
