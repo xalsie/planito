@@ -50,6 +50,17 @@ async function generateFixtures() {
       schools.push(school);
     }
 
+    // Create 10 classes
+    const classes = [];
+    for (let i = 0; i < 10; i++) {
+      const _class = new Class({
+        name: faker.helpers.arrayElement(['A', 'B', 'C', 'D', 'E', 'F']) + i,
+        school_id: faker.helpers.arrayElement(schools).id
+      });
+      await _class.save();
+      classes.push(_class);
+    }
+
     // Create 10 modules
     const modules = [];
     const possibleModules = ['Symfony', 'React', 'Angular', 'Vue', 'Node', 'Express', 'Laravel', 'Django', 'Flask', 'Spring'];
@@ -85,11 +96,20 @@ async function generateFixtures() {
       });
       await userSchool.save();
 
-      const userModule = new UserModule({
-        user_id: user.id,
-        module_id: faker.helpers.arrayElement(modules).id
-      });
-      await userModule.save();
+      for (let j = 0; j < 3; j++) {
+        const userModule = new UserModule({
+          user_id: user.id,
+          module_id: faker.helpers.arrayElement(modules).id
+        });
+        await userModule.save();
+
+        const moduleClass = new ModuleClass({
+          user_id: user.id,
+          module_id: userModule.module_id,
+          class_id: faker.helpers.arrayElement(classes).id
+        });
+        await moduleClass.save();
+      }
       
       users.push(user);
     }
@@ -108,16 +128,6 @@ async function generateFixtures() {
       rooms.push(room);
     }
 
-    // Create 10 classes
-    const classes = [];
-    for (let i = 0; i < 10; i++) {
-      const _class = new Class({
-        name: faker.helpers.arrayElement(['A', 'B', 'C', 'D', 'E', 'F']) + i,
-        school_id: faker.helpers.arrayElement(schools).id
-      });
-      await _class.save();
-      classes.push(_class);
-    }
 
     
 
@@ -197,17 +207,6 @@ async function generateFixtures() {
 
       await event.save();
       events.push(event);
-    }
-
-    // create 10 module classes
-    for (let i = 0; i < 10; i++) {
-      const moduleClass = new ModuleClass({
-        module_id: faker.helpers.arrayElement(modules).id,
-        class_id: faker.helpers.arrayElement(classes).id,
-        user_id: faker.helpers.arrayElement(users).id,
-      });
-
-      await moduleClass.save();
     }
 
     console.log("Fixtures successfully generated!");
