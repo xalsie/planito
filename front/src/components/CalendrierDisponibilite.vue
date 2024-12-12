@@ -1,29 +1,5 @@
 <template>
   <div>
-    <div class="mb-4 flex space-x-4">
-      <button 
-        @click="currentEventType = 'availability'"
-        :class="[
-          'px-4 py-2 rounded-md font-poppins text-sm font-medium transition-colors duration-200',
-          currentEventType === 'availability' 
-            ? 'bg-green-500 text-white' 
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-        ]"
-      >
-        Disponible
-      </button>
-      <button 
-        @click="currentEventType = 'unavailability'"
-        :class="[
-          'px-4 py-2 rounded-md font-poppins text-sm font-medium transition-colors duration-200',
-          currentEventType === 'unavailability' 
-            ? 'bg-red-500 text-white' 
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-        ]"
-      >
-        Indisponible
-      </button>
-    </div>
     <div class="bg-white p-4 rounded-lg shadow">
       <FullCalendar 
         :options="calendarOptions"
@@ -77,6 +53,7 @@ const calendarOptions = {
   weekends: true,
   events: [],
   height: 'auto',
+  allDaySlot: false,
   buttonText: {
     today: "Aujourd'hui",
     month: 'Mois',

@@ -30,6 +30,7 @@ const calendarOptions = {
   weekends: true,
   events: [],
   height: 'auto',
+  allDaySlot: false,
   buttonText: {
     today: "Aujourd'hui",
     month: 'Mois',

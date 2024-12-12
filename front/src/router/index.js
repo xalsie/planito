@@ -60,4 +60,41 @@ const router = createRouter({
     ]
 })
 
+router.beforeEach(async (to, from, next) => {
+    const token = localStorage.getItem('token')
+
+    if (to.path.startsWith('/dashboard/intervenant')) {
+        if (!token) {
+            next('/login')
+            return
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/api/user', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+
+            if (!response.ok) {
+                throw new Error('Non autorisé')
+            }
+
+            const user = await response.json()
+            if (user.role !== 'ROLE_INTERVENANT') {
+                next('/login')
+                return
+            }
+
+            localStorage.setItem('user', JSON.stringify(user))
+            next()
+        } catch (error) {
+            console.error('Erreur d\'authentification:', error)
+            next('/login')
+        }
+    } else {
+        next()
+    }
+})
+
 export default router 
