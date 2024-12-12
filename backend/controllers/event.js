@@ -88,6 +88,7 @@ const importIcalFromURL = async (req, res, next) => {
       throw error;
     }
     const { url, userId } = req.body;
+    console.log("url", url);
 
     ical.fromURL(url, {}, async function (err, data) {
       if (err) {
@@ -107,16 +108,18 @@ const importIcalFromURL = async (req, res, next) => {
           if (ev.type === "VEVENT") {
             const startDate = new Date(ev.start);
             const endDate = new Date(ev.end);
-            console.log(
-              "Date",
-              ++count,
-              ":",
-              startDate,
-              " >= ",
-              currentDate,
-              " = ",
-              startDate >= currentDate
-            );
+            if (startDate >= currentDate)
+              console.log(
+                "Date",
+                ++count,
+                ":",
+                startDate,
+                " >= ",
+                currentDate,
+                " = ",
+                startDate >= currentDate
+              );
+            else ++count;
 
             if (startDate >= currentDate /*&& startDate <= endOfNextYear*/) {
               console.log("before findOrCreate");
