@@ -29,6 +29,10 @@ const Module = sequelize.define(
       allowNull: false,
       defaultValue: 120,
     },
+    school_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
   },
   {
     hooks: {

@@ -3,35 +3,32 @@ const { v4: uuidv4 } = require("uuid");
 const { DataTypes } = require("sequelize");
 
 const sequelize = require("./db");
+const User = require("./user");
 
-const UserModule = sequelize.define(
-  "userModule",
+const UserSchool = sequelize.define(
+  "userSchool",
   {
     id: {
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
     },
-    settings: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: true,
-    },
     user_id: {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    module_id: {
+    school_id: {
       type: DataTypes.UUID,
       allowNull: false,
     },
   },
   {
     hooks: {
-      beforeValidate: (userModule, options) => {
-        userModule.id = uuidv4();
+      beforeValidate: (userSchool, options) => {
+        userSchool.id = uuidv4();
       },
     },
   }
 );
 
-module.exports = UserModule;
+module.exports = UserSchool;

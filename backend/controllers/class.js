@@ -17,6 +17,28 @@ const find = async (req, res, next) => {
     }
 }
 
+const findBySchool = async (req, res, next) => {
+    const schoolId = req.params.schoolId;
+    try {
+        const classes = await Class.findAll({
+            where: {
+                school_id: schoolId
+            }
+        });
+        if (!classes) {
+            const error = new Error("Class not found.");
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json(classes);
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
 const findById = async (req, res, next) => {
     const classId = req.params.classId;
     try {
@@ -97,5 +119,6 @@ module.exports = {
     findById,
     create,
     updateById,
-    deleteById
+    deleteById,
+    findBySchool
 };

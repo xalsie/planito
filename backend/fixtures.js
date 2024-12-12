@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { faker, fi } = require('@faker-js/faker');
+const { faker, fi, ro } = require('@faker-js/faker');
 const bcrypt = require("bcryptjs");
 const { EventType } = require('./enum');
 
@@ -9,13 +9,16 @@ const Room = require('./models/room');
 const Class = require('./models/class');
 const Module = require('./models/module');
 const Event = require('./models/event');
+const UserSchool = require('./models/userSchool');
+const UserModule = require('./models/userModule');
 const ModuleClass = require('./models/moduleClass');
 
 require('./models/db');
 
 async function generateFixtures() {
   try {
-    // Create 5 users
+
+    // Create 5 staff users
     const users = [];
     for (let i = 0; i < 5; i++) {
       const hashedPw = await bcrypt.hash('test', 12);
@@ -25,7 +28,7 @@ async function generateFixtures() {
         lastName: faker.person.lastName(),
         email: faker.internet.email(),
         password: hashedPw,
-        roles: faker.helpers.arrayElement([['ROLE_STAFF'], ['ROLE_INTERVENANT']])
+        roles: ['ROLE_STAFF']
       });
       await user.save();
       users.push(user);
@@ -47,18 +50,6 @@ async function generateFixtures() {
       schools.push(school);
     }
 
-    // Create  15 rooms
-    const rooms = [];
-    for (let i = 0; i < 15; i++) {
-      const room = new Room({
-        name: faker.helpers.arrayElement(['A', 'B', 'C', 'D', 'E', 'F']) + i,
-        school_id: faker.helpers.arrayElement(schools).id
-      });
-
-      await room.save();
-      rooms.push(room);
-    }
-
     // Create 10 classes
     const classes = [];
     for (let i = 0; i < 10; i++) {
@@ -78,12 +69,67 @@ async function generateFixtures() {
         name: possibleModules[i],
         volHours: faker.number.int({ min: 10, max: 20 }),
         nbCc: faker.number.int({ min: 1, max: 3 }),
-        volExams: faker.number.int({ min: 60, max: 180 })
+        volExams: faker.number.int({ min: 60, max: 180 }),
+        school_id: faker.helpers.arrayElement(schools).id
       });
 
       await module.save();
       modules.push(module);
     }
+
+    // Create intervanants
+    for (let i = 0; i < 10; i++) {
+      const hashedPw = await bcrypt.hash('test', 12);
+
+      const user = new User({
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        email: faker.internet.email(),
+        password: hashedPw,
+        roles: ['ROLE_INTERVENANT']
+      });
+      await user.save();
+     
+      const userSchool = new UserSchool({
+        user_id: user.id,
+        school_id: faker.helpers.arrayElement(schools).id
+      });
+      await userSchool.save();
+
+      for (let j = 0; j < 3; j++) {
+        const userModule = new UserModule({
+          user_id: user.id,
+          module_id: faker.helpers.arrayElement(modules).id
+        });
+        await userModule.save();
+
+        const moduleClass = new ModuleClass({
+          user_id: user.id,
+          module_id: userModule.module_id,
+          class_id: faker.helpers.arrayElement(classes).id
+        });
+        await moduleClass.save();
+      }
+      
+      users.push(user);
+    }
+
+    
+
+    // Create  15 rooms
+    const rooms = [];
+    for (let i = 0; i < 15; i++) {
+      const room = new Room({
+        name: faker.helpers.arrayElement(['A', 'B', 'C', 'D', 'E', 'F']) + i,
+        school_id: faker.helpers.arrayElement(schools).id
+      });
+
+      await room.save();
+      rooms.push(room);
+    }
+
+
+    
 
     // create 20 events
     const events = [];
@@ -161,17 +207,6 @@ async function generateFixtures() {
 
       await event.save();
       events.push(event);
-    }
-
-    // create 10 module classes
-    for (let i = 0; i < 10; i++) {
-      const moduleClass = new ModuleClass({
-        module_id: faker.helpers.arrayElement(modules).id,
-        class_id: faker.helpers.arrayElement(classes).id,
-        user_id: faker.helpers.arrayElement(users).id,
-      });
-
-      await moduleClass.save();
     }
 
     console.log("Fixtures successfully generated!");

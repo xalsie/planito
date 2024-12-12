@@ -5,7 +5,11 @@ const router = express.Router();
 
 router.post("/", userController.create);
 
+
 router.get("/", userController.find);
+
+router.get("/intervenants/:schoolId", userController.findIntervenantBySchool);
+
 
 router.get("/:userId", userController.findById);
 

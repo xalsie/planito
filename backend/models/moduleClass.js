@@ -5,6 +5,11 @@ const sequelize = require("./db");
 const moduleClass = sequelize.define(
     "moduleClass",
     {
+        id: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            primaryKey: true,
+        },
         module_id: {
             type: DataTypes.UUID,
             allowNull: false,
@@ -20,8 +25,8 @@ const moduleClass = sequelize.define(
     },
     {
         hooks: {
-            beforeValidate: (user, options) => {
-                user.id = uuidv4();
+            beforeValidate: (moduleClass, options) => {
+                moduleClass.id = uuidv4();
             },
         },
     }

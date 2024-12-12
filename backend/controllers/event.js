@@ -1,10 +1,10 @@
-const Event = require('../models/event');
+const Event = require("../models/event");
 
 const find = async (req, res, next) => {
     try {
         const events = await Event.findAll();
         if (!events) {
-            res.status(404).json('User not found');
+            res.status(404).json("Event not found");
             return;
         }
         res.status(200).json(events);
@@ -18,7 +18,7 @@ const findById = async (req, res, next) => {
     try {
         const event = await Event.findByPk(userId);
         if (!event) {
-            res.status(404).json('User not found');
+            res.status(404).json("Event not found");
             return;
         }
         res.status(200).json(event);
@@ -35,13 +35,13 @@ const create = async (req, res, next) => {
             description,
             type,
             start,
-            end
+            end,
         });
         res.status(201).json(event);
     } catch (err) {
         res.status(500).json(err);
     }
-}
+};
 
 const updateById = async (req, res, next) => {
     const eventId = req.params.eventId;
@@ -49,15 +49,15 @@ const updateById = async (req, res, next) => {
     try {
         const event = await Event.findByPk(eventId);
         if (!event) {
-            res.status(404).json('User not found');
+            res.status(404).json("Event not found");
             return;
         }
-        user.title = title;
-        user.description = description;
-        user.type = type;
-        user.start = start;
-        user.end = end;
-        await user.save();
+        event.title = title;
+        event.description = description;
+        event.type = type;
+        event.start = start;
+        event.end = end;
+        await event.save();
         res.status(200).json(event);
     } catch (err) {
         res.status(500).json(err);
@@ -69,7 +69,7 @@ const deleteById = async (req, res, next) => {
     try {
         const event = await Event.findByPk(eventId);
         if (!event) {
-            res.status(404).json('User not found');
+            res.status(404).json("Event not found");
             return;
         }
         await event.destroy();
@@ -77,6 +77,6 @@ const deleteById = async (req, res, next) => {
     } catch (err) {
         res.status(500).json(err);
     }
-}
+};
 
 module.exports = { find, findById, create, updateById, deleteById };

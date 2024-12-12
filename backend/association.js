@@ -113,4 +113,15 @@ Class.belongsTo(School, {
     onDelete: "CASCADE",
     });
 
-sequelize.sync({ force: true });
+module.exports = {
+    User,
+    UserSchool,
+    School,
+    Room,
+    Material,
+    Event,
+    Module,
+    Class,
+    UserModule,
+    ModuleClass
+  };
