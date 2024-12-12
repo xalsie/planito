@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 const { DataTypes } = require("sequelize");
 
 const sequelize = require("./db");
+const UserSchool = require("./userSchool");
 
 const User = sequelize.define(
   "user",
@@ -42,5 +43,7 @@ const User = sequelize.define(
     },
   }
 );
+
+
 
 module.exports = User;

@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("./models/db");
+require("./association")
 const cors = require("cors");
 const express = require("express");
 

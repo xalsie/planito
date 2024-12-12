@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { faker, fi } = require('@faker-js/faker');
+const { faker, fi, ro } = require('@faker-js/faker');
 const User = require('./models/user');
 const School = require('./models/school');
 const Room = require('./models/room');
@@ -7,6 +7,8 @@ const bcrypt = require("bcryptjs");
 const Class = require('./models/class');
 const Module = require('./models/module');
 const Event = require('./models/event');
+const UserSchool = require('./models/userSchool');
+const UserModule = require('./models/userModule');
 const { EventType } = require('./enum');
 
 require('./models/db');
@@ -16,18 +18,18 @@ require('./models/db');
 
 async function generateFixtures() {
   try {
-    // Create 5 users
+
+    // Create 5 staff users
     const users = [];
     for (let i = 0; i < 5; i++) {
       const hashedPw = await bcrypt.hash('test', 12);
-
 
       const user = new User({
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
         email: faker.internet.email(),
         password: hashedPw,
-        roles: faker.helpers.arrayElement([['ROLE_STAFF'], ['ROLE_INTERVENANT']])
+        roles: ['ROLE_STAFF']
       });
       await user.save();
       users.push(user);
@@ -48,6 +50,52 @@ async function generateFixtures() {
       await school.save();
       schools.push(school);
     }
+
+    // Create 10 modules
+    const modules = [];
+    const possibleModules = ['Symfony', 'React', 'Angular', 'Vue', 'Node', 'Express', 'Laravel', 'Django', 'Flask', 'Spring'];
+    for (let i = 0; i < 10; i++) {
+      const module = new Module({
+        name: possibleModules[i],
+        volHours: faker.number.int({ min: 10, max: 20 }),
+        nbCc: faker.number.int({ min: 1, max: 3 }),
+        volExams: faker.number.int({ min: 60, max: 180 }),
+        school_id: faker.helpers.arrayElement(schools).id
+      });
+
+      await module.save();
+      modules.push(module);
+    }
+
+    // Create intervanants
+    for (let i = 0; i < 10; i++) {
+      const hashedPw = await bcrypt.hash('test', 12);
+
+      const user = new User({
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        email: faker.internet.email(),
+        password: hashedPw,
+        roles: ['ROLE_INTERVENANT']
+      });
+      await user.save();
+     
+      const userSchool = new UserSchool({
+        user_id: user.id,
+        school_id: faker.helpers.arrayElement(schools).id
+      });
+      await userSchool.save();
+
+      const userModule = new UserModule({
+        user_id: user.id,
+        module_id: faker.helpers.arrayElement(modules).id
+      });
+      await userModule.save();
+      
+      users.push(user);
+    }
+
+    
     
     // Create  15 rooms
     const rooms = [];
@@ -72,20 +120,7 @@ async function generateFixtures() {
       classes.push(_class);
     }
 
-    // Create 10 modules
-    const modules = [];
-    const possibleModules = ['Symfony', 'React', 'Angular', 'Vue', 'Node', 'Express', 'Laravel', 'Django', 'Flask', 'Spring'];
-    for (let i = 0; i < 10; i++) {
-      const module = new Module({
-        name: possibleModules[i],
-        volHours: faker.number.int({ min: 10, max: 20 }),
-        nbCc: faker.number.int({ min: 1, max: 3 }),
-        volExams: faker.number.int({ min: 60, max: 180 })
-      });
-
-      await module.save();
-      modules.push(module);
-    }
+    
 
     // create 20 events
     const events = [];
