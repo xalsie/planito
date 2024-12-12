@@ -1,8 +1,6 @@
 <template>
   <div class="bg-white p-4 rounded-lg shadow">
-    <FullCalendar 
-      :options="calendarOptions"
-    />
+    <FullCalendar :options="calendarOptions" />
   </div>
 </template>
 
@@ -49,4 +47,4 @@ const calendarOptions = {
     }
   }
 }
-</script> 
+</script>

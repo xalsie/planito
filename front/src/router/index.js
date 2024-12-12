@@ -5,6 +5,12 @@ import IntervenantsListView from "../views/IntervenantsListView.vue";
 import RoomsListView from "../views/RoomsListView.vue";
 import ModulesListView from "../views/ModulesListView.vue";
 import CalendarView from "../views/CalendarView.vue";
+import CalendrierView from "../views/intervenant/CalendrierView.vue";
+import ImportCalendrierView from "../views/intervenant/ImportCalendrierView.vue";
+import DisponibiliteView from "../views/intervenant/DisponibiliteView.vue";
+import HomeView from "../views/HomeView.vue";
+import LoginView from "../views/LoginView.vue";
+import RegisterView from "../views/RegisterView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -82,8 +88,8 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const token = localStorage.getItem("token");
-
   if (to.path.startsWith("/dashboard/intervenant")) {
+    next();
     if (!token) {
       next("/login");
       return;

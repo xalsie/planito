@@ -1,35 +1,50 @@
-<script>
+<template>
+    <div class="bg-white p-4 rounded-lg shadow">
+        <FullCalendar :options="calendarOptions" />
+    </div>
+</template>
+
+<script setup>
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import frLocale from '@fullcalendar/core/locales/fr'
+import '../assets/styles/calendar.css'
 
-
-export default {
-    components: {
-        FullCalendar
+const calendarOptions = {
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    initialView: 'timeGridWeek',
+    locale: frLocale,
+    headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
-    data() {
-        return {
-            calendarOptions: {
-                plugins: [dayGridPlugin, interactionPlugin],
-                initialView: 'dayGridMonth',
-                locale: frLocale,
-                dateClick: this.handleDateClick,
-                events: [
-                    { title: 'Event 1', start: '2024-12-12T10:30:00', end: '2024-12-12T12:00:00' },
-                    { title: 'Event 2', date: '2024-12-12' } // All-day event
-                ]
+    editable: false,
+    selectable: false,
+    selectMirror: false,
+    dayMaxEvents: true,
+    weekends: true,
+    events: [],
+    height: 'auto',
+    allDaySlot: false,
+    buttonText: {
+        today: "Aujourd'hui",
+        month: 'Mois',
+        week: 'Semaine',
+        day: 'Jour'
+    },
+    views: {
+        timeGrid: {
+            dayMaxEventRows: 4,
+            slotDuration: '01:00:00',
+            slotLabelFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
             }
-        }
-    },
-    methods: {
-        handleDateClick: function (arg) {
-            alert('date click! ' + arg.dateStr)
         }
     }
 }
 </script>
-<template>
-    <FullCalendar :options="calendarOptions" />
-</template>
