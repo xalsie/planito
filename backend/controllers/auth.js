@@ -18,7 +18,10 @@ exports.login = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    res.status(200).json({ token: user.id, roles: user.roles });
+    
+    user.password = undefined;
+
+    res.status(200).json({ token: user.id, user: user });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

@@ -8,5 +8,5 @@
 </template>
 
 <script setup>
-import SidebarIntervenant from '../components/SidebarIntervenant.vue'
+  import SidebarIntervenant from '../components/SidebarIntervenant.vue'
 </script> 

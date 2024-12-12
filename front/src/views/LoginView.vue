@@ -13,15 +13,9 @@
 							<label for="email" class="block mb-2 text-sm font-medium text-gray-700 font-poppins">
 								Adresse email
 							</label>
-							<input 
-								type="email" 
-								name="email" 
-								id="email" 
-								v-model="email"
-								placeholder="exemple@email.com" 
+							<input type="email" name="email" id="email" v-model="email" placeholder="exemple@email.com"
 								class="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-poppins"
-								required
-							>
+								required>
 						</div>
 
 						<div>
@@ -33,29 +27,23 @@
 									Mot de passe oublié ?
 								</a>
 							</div>
-							<input 
-								type="password" 
-								name="password" 
-								id="password" 
-								v-model="password"
-								placeholder="••••••••" 
+							<input type="password" name="password" id="password" v-model="password"
+								placeholder="••••••••"
 								class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-poppins"
-								required
-							>
+								required>
 						</div>
 					</div>
 
 					<div class="space-y-6">
-						<button 
-							type="submit" 
-							class="w-full bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors font-poppins"
-						>
+						<button type="submit"
+							class="w-full bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors font-poppins">
 							SE CONNECTER
 						</button>
 
 						<p class="text-center text-sm text-gray-600 font-poppins">
 							Pas encore de compte ?
-							<router-link to="/register" class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
+							<router-link to="/register"
+								class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
 								S'inscrire
 							</router-link>
 						</p>
@@ -67,43 +55,53 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+	import { ref } from 'vue'
+	import { useRouter } from 'vue-router'
 
-const email = ref('')
-const password = ref('')
+	const email = ref('')
+	const password = ref('')
 
-const router = useRouter()
+	const router = useRouter()
 
-const handleSubmit = async () => {
-	console.log(email.value, password.value)
+	const handleSubmit = async () => {
+		const response = await fetch('http://localhost:3000/auth/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: email.value,
+				password: password.value
+			})
+		});
 
-	const response = await fetch('http://localhost:3000/auth/login', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			email: email.value,
-			password: password.value
-		})
-	});
+		try {
+			const {
+				token,
+				user
+			} = await response.json();
 
-	try {
-		const {
-			token,
-			roles
-		} = await response.json();
+			console.log(token, user)
 
-		console.log(token, roles)
+			localStorage.setItem('token', token)
+			localStorage.setItem('user', JSON.stringify(user))
 
-		localStorage.setItem('token', token)
-		localStorage.setItem('roles', roles)
-
-		router.push({ name: 'dashboard-intervenant'})
-	} catch (error) {
-		return "An error occurred";
+			if (user.roles.includes('ROLE_INTERVENANT')) {
+				router.push({
+					name: 'dashboard-intervenant'
+				}).then(() => {
+					router.go(0)
+				});
+			} else if (user.roles.includes('ROLE_SCHOOL')) {
+				router.push({
+					name: 'dashboard-ecole'
+				}).then(() => {
+					router.go(0)
+				});
+			}
+		} catch (error) {
+			console.log("An error occurred");
+			return error;
+		}
 	}
-}
-
 </script>

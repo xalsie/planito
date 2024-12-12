@@ -93,10 +93,11 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 // Données utilisateur
-const user = ref(JSON.parse(localStorage.getItem('user')) || {
-  firstName: '',
-  lastName: '',
-  role: ''
+const localUser = JSON.parse(localStorage.getItem('user'))
+const user = ref({
+  firstName: localUser.firstName || 'John',
+  lastName: localUser.lastName || 'Doe',
+  role: localUser.roles.join(' - ') || 'Intervenant'
 })
 
 // Données pour les sélecteurs
