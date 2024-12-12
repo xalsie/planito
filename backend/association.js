@@ -53,9 +53,9 @@ Event.belongsTo(Class, {
 });
 
 User.hasMany(UserModule, {
-    foreignKey: "user_id",
-    onDelete: "CASCADE",
-  });
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
 
 UserModule.belongsTo(User, {
   foreignKey: "user_id",
@@ -87,4 +87,14 @@ Module.belongsTo(School, {
   onDelete: "CASCADE",
 });
 
-sequelize.sync({ force: true });
+module.exports = {
+    User,
+    UserSchool,
+    School,
+    Room,
+    Material,
+    Event,
+    Module,
+    Class,
+    UserModule,
+  };
