@@ -68,7 +68,42 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const email = ref('')
 const password = ref('')
-</script> 
+
+const router = useRouter()
+
+const handleSubmit = async () => {
+	console.log(email.value, password.value)
+
+	const response = await fetch('http://localhost:3000/auth/login', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			email: email.value,
+			password: password.value
+		})
+	});
+
+	try {
+		const {
+			token,
+			roles
+		} = await response.json();
+
+		console.log(token, roles)
+
+		localStorage.setItem('token', token)
+		localStorage.setItem('roles', roles)
+
+		router.push({ name: 'dashboard-intervenant'})
+	} catch (error) {
+		return "An error occurred";
+	}
+}
+
+</script>
