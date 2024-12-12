@@ -2,10 +2,55 @@
   <aside class="w-64 bg-white shadow-lg">
     <div class="p-6 border-b border-gray-200">
       <div class="text-xl font-bold text-gray-800 font-poppins">
-        {{ user.name }}
+        {{ user.firstName }} {{ user.lastName }}
       </div>
       <div class="text-sm text-gray-600 font-poppins">
         {{ user.role }}
+      </div>
+    </div>
+
+    <div class="p-4 border-b border-gray-200">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">École</label>
+          <select 
+            v-model="selectedSchool"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Sélectionner une école</option>
+            <option v-for="school in schools" :key="school.id" :value="school.id">
+              {{ school.name }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Classe</label>
+          <select 
+            v-model="selectedClass"
+            :disabled="!selectedSchool"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Sélectionner une classe</option>
+            <option v-for="class_ in filteredClasses" :key="class_.id" :value="class_.id">
+              {{ class_.name }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Module</label>
+          <select 
+            v-model="selectedModule"
+            :disabled="!selectedClass"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Sélectionner un module</option>
+            <option v-for="module in filteredModules" :key="module.id" :value="module.id">
+              {{ module.name }}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -42,14 +87,87 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const user = ref({
-  name: 'Monsieur prof man',
-  role: 'Intervenant'
+// Données utilisateur
+const user = ref(JSON.parse(localStorage.getItem('user')) || {
+  firstName: '',
+  lastName: '',
+  role: ''
+})
+
+// Données pour les sélecteurs
+const schools = ref([])
+const classes = ref([])
+const modules = ref([])
+
+const selectedSchool = ref('')
+const selectedClass = ref('')
+const selectedModule = ref('')
+
+// Filtres pour les sélecteurs
+const filteredClasses = computed(() => 
+  selectedSchool.value
+    ? classes.value.filter(c => c.schoolId === selectedSchool.value)
+    : []
+)
+
+const filteredModules = computed(() => 
+  selectedClass.value
+    ? modules.value.filter(m => m.classId === selectedClass.value)
+    : []
+)
+
+// Chargement des données
+async function fetchUserData() {
+  const token = localStorage.getItem('token')
+  const userId = user.value.id
+
+  try {
+    const [schoolsRes, classesRes, modulesRes] = await Promise.all([
+      fetch(`http://localhost:8000/api/users/${userId}/schools`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }),
+      fetch(`http://localhost:8000/api/users/${userId}/classes`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }),
+      fetch(`http://localhost:8000/api/users/${userId}/modules`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+    ])
+
+    if (!schoolsRes.ok || !classesRes.ok || !modulesRes.ok) {
+      throw new Error('Erreur lors du chargement des données')
+    }
+
+    schools.value = await schoolsRes.json()
+    classes.value = await classesRes.json()
+    modules.value = await modulesRes.json()
+  } catch (error) {
+    console.error('Erreur:', error)
+  }
+}
+
+watch(selectedSchool, () => {
+  selectedClass.value = ''
+  selectedModule.value = ''
+})
+
+watch(selectedClass, () => {
+  selectedModule.value = ''
+})
+
+onMounted(() => {
+  fetchUserData()
 })
 
 const menuItems = ref([
@@ -71,8 +189,17 @@ const menuItems = ref([
 ])
 
 const handleLogout = () => {
-  localStorage.removeItem('token') 
-  localStorage.removeItem('user') 
-  router.push('/home')
+  const token = localStorage.getItem('token')
+  
+  fetch('http://localhost:8000/api/logout', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  }).finally(() => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    router.push('/login')
+  })
 }
 </script> 
