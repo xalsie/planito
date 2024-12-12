@@ -3,15 +3,15 @@
     <nav class="container mx-auto px-6 py-4">
       <div class="flex items-center justify-between">
         <router-link 
-          to="/" 
+          to="/home" 
           class="text-2xl font-bold text-blue-600 brand-name hover:text-blue-700 transition-colors"
         >
           Planito
         </router-link>
         <div class="hidden md:flex space-x-6">
           <router-link 
-            to="/connexion" 
-            v-if="$route.path !== '/connexion'"
+            to="/login" 
+            v-if="$route.path !== '/login' && !$route.path.includes('/dashboard')"
             class="px-6 py-2 text-blue-600 border-2 border-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors font-poppins font-medium"
           >
             Connexion

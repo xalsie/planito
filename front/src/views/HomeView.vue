@@ -13,10 +13,10 @@
             Facilitez la gestion de vos plannings scolaires avec Planito.
           </p>
           <router-link 
-            to="/connexion" 
+            to="/login" 
             class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors font-poppins"
           >
-            COMMENCER
+            Commencer
           </router-link>
         </div>
       </div>

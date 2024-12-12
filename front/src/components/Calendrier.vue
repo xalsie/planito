@@ -23,13 +23,19 @@ const calendarOptions = {
     center: 'title',
     right: 'dayGridMonth,timeGridWeek,timeGridDay'
   },
-  editable: true,
-  selectable: true,
-  selectMirror: true,
+  editable: false,
+  selectable: false,
+  selectMirror: false,
   dayMaxEvents: true,
   weekends: true,
   events: [],
   height: 'auto',
+  buttonText: {
+    today: "Aujourd'hui",
+    month: 'Mois',
+    week: 'Semaine',
+    day: 'Jour'
+  },
   views: {
     timeGrid: {
       dayMaxEventRows: 4,
