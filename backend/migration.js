@@ -78,6 +78,11 @@ ModuleClass.belongsTo(Class, {
   onDelete: "CASCADE",
 });
 
+User.hasMany(ModuleClass, {
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
+
 Module.belongsTo(User, {
   foreignKey: "user_id",
   onDelete: "CASCADE",
@@ -102,4 +107,9 @@ Module.belongsTo(School, {
   onDelete: "CASCADE",
 });
 
-sequelize.sync({ force: true });
+Class.belongsTo(School, {
+  foreignKey: "school_id",
+  onDelete: "CASCADE",
+});
+
+sequelize.sync({ alter: true });

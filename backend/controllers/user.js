@@ -4,7 +4,8 @@ const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize");
 const UserSchool = require("../models/userSchool");
 const UserModule = require("../models/userModule");
-
+const ModuleClass = require("../models/moduleClass");
+const Class = require("../models/class");
 exports.create = async (req, res, next) => {
   try {
     const { firstName, lastName, email, password, roles } = req.body;
@@ -120,6 +121,16 @@ exports.findIntervenantBySchool = async (req, res, next) => {
               ],
               attributes: ["module_id"],
             },
+            {
+              model: ModuleClass,
+              include: [
+                {
+                  model: Class,
+                  attributes: ["name"],
+                },
+              ],
+              attributes: ["class_id"],
+            },
           ],
         },
       ],
@@ -128,14 +139,25 @@ exports.findIntervenantBySchool = async (req, res, next) => {
     const formattedUsers = users.map((userSchool) => {
       const user = userSchool.user;
 
-      const modules = user.userModules?.map((userModule) => userModule.module.name).join(", ") || "";
+      const roles = user.roles.join(", ");
+      const modules = Array.from(
+        new Set(
+          user.userModules?.map((userModule) => userModule.module.name) || []
+        )
+      ).join(", ");
 
+      const classes = Array.from(
+        new Set(
+          user.moduleClasses?.map((moduleClass) => moduleClass.class.name) || []
+        )
+      ).join(", ");
       return {
         lastname: user.lastName,
         firstname: user.firstName,
         email: user.email,
-        roles: user.roles,
+        roles: roles,
         modules: modules,
+        classes: classes,
       };
     });
     res.status(200).json(formattedUsers);
