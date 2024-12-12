@@ -8,5 +8,6 @@ router.post("/", eventController.create);
 router.get("/:eventId", eventController.findById);
 router.patch("/:eventId", eventController.updateById);
 router.delete("/:eventId", eventController.deleteById);
+router.patch("/", eventController.importIcalFromURL);
 
 module.exports = router;
