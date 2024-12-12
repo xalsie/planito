@@ -1,6 +1,6 @@
 const Event = require("../models/event");
 const ical = require("node-ical");
-const EventType = require("../enum");
+const { EventType } = require("../enum");
 
 const find = async (req, res, next) => {
   try {
@@ -99,6 +99,8 @@ const importIcalFromURL = async (req, res, next) => {
       }
       let count = 0;
       const currentDate = new Date();
+      // 31 Décembre de l'année prochaine
+      const nextYear = new Date(currentDate.getFullYear() + 1, 11, 31);
       console.log("data");
 
       for (let k in data) {
@@ -121,15 +123,16 @@ const importIcalFromURL = async (req, res, next) => {
               );
             else ++count;
 
-            if (startDate >= currentDate /*&& startDate <= endOfNextYear*/) {
+            if (startDate >= currentDate && startDate <= nextYear) {
               console.log("before create");
-              const event = await Event.create({
+              const event = Event.create({
                 title: ev.summary || "No title",
                 description: ev.description || "No description",
-                type: EventType.UNAVAILABILITY || "No type",
+                type: EventType.UNAVAILABILITY,
                 start: startDate,
                 end: endDate,
                 user_id: userId,
+                isImported: true,
               });
               console.log("event");
               res.status(201).json(event).end();

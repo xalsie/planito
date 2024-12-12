@@ -59,6 +59,11 @@ const Event = sequelize.define(
       type: DataTypes.UUID,
       allowNull: true,
     },
+    isImported: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   {
     hooks: {
