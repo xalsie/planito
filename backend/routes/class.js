@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get("/", classController.find);
 router.post("/", classController.create);
+router.get("/school/:schoolId", classController.findBySchool);
 router.get("/:classId", classController.findById);
 router.patch("/:classId", classController.updateById);
 router.delete("/:classId", classController.deleteById);

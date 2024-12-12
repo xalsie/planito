@@ -113,4 +113,4 @@ Class.belongsTo(School, {
     onDelete: "CASCADE",
     });
 
-sequelize.sync({ alter: true });
+sequelize.sync({ force: true });
