@@ -1,6 +1,7 @@
 <template>
     <div
         class="relative flex flex-col items-center max-w-lg gap-4 p-6 rounded-md shadow-md sm:py-8 sm:px-12 dark:bg-gray-50 dark:text-gray-800">
+        <!-- Bouton de fermeture -->
         <button class="absolute top-2 right-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"
                 class="flex-shrink-0 w-6 h-6">
@@ -9,6 +10,8 @@
                 </polygon>
             </svg>
         </button>
+
+        <!-- Icône -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
             class="w-40 h-40 fill-current shrink-0 dark:text-blue-600">
             <path
@@ -21,13 +24,54 @@
                 d="M470.65,334.707l-47.867-81.283-41.148-6.812,61.441,104.333A32,32,0,0,1,415.5,399.183H304.046l38.359-38.358L319.778,338.2l-76.332,76.332,76.332,76.333,22.627-22.628-37.052-37.051H415.5a64,64,0,0,0,55.149-96.476Z">
             </path>
         </svg>
-        <h2 class="text-2xl font-semibold leading-tight tracking-wide">Créer une salle</h2>
-        <p class="flex-1 text-center dark:text-gray-600">Créez une salle au sein de notre plateforme afin de l'intégrer
-            dans le planning</p>
 
-        <input type="text" class="border-solid border-slate-400	border p-2 rounded-lg" placeholder="Nom de la salle">
+        <!-- Titre -->
+        <h2 class="text-2xl font-semibold leading-tight tracking-wide">{{ title }}</h2>
 
-        <button type="button" class="px-8 py-3 font-semibold rounded-full dark:bg-blue-600 dark:text-gray-50">Créer la
-            salle</button>
+        <!-- Description -->
+        <p class="flex-1 text-center dark:text-gray-600">{{ description }}</p>
+
+        <!-- Champs dynamiques -->
+        <div v-for="(placeholder, index) in placeholders" :key="index" class="w-full">
+            <input v-model="inputs[index]" type="text"
+                class="border-solid border-slate-400 border p-2 rounded-lg w-full" :placeholder="placeholder">
+        </div>
+
+        <!-- Bouton d'action -->
+        <button type="button" class="px-8 py-3 font-semibold rounded-full dark:bg-blue-600 dark:text-gray-50"
+            @click="onClick(inputs)">
+            Créer la salle
+        </button>
     </div>
 </template>
+
+<script setup>
+import { ref } from 'vue';
+import { defineProps } from 'vue';
+
+defineProps({
+    title: {
+        type: String,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    placeholders: {
+        type: Array,
+        required: true,
+    },
+    onClick: {
+        type: Function,
+        required: true,
+    },
+});
+
+// Crée un tableau pour stocker les valeurs des inputs
+const inputs = ref([]);
+</script>
+
+<style scoped>
+/* Styles personnalisés ici */
+</style>

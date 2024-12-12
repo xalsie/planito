@@ -24,9 +24,6 @@ export const useUserStore = defineStore("user", () => {
   };
 
   return {
-    product,
-    actualLanguage,
-    updateLanguage,
-    getProduct,
+    intervenants,
   };
 });
