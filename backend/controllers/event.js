@@ -1,8 +1,24 @@
 const Event = require("../models/event");
 const ical = require("node-ical");
 const { EventType } = require("../enum");
+const { Op } = require("sequelize");
+const Module = require("../models/module");
+const Class = require("../models/class");
+const Room = require("../models/room");
+const Material = require("../models/material");
+const User = require("../models/user");
 
 const find = async (req, res, next) => {
+  try {
+    const events = await Event.findAll();
+    if (!events) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json(err);
+  }
   try {
     const events = await Event.findAll();
     if (!events) {
@@ -27,9 +43,33 @@ const findById = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
   }
+  const userId = req.params.userId;
+  try {
+    const event = await Event.findByPk(userId);
+    if (!event) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    res.status(200).json(event);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
 const create = async (req, res, next) => {
+  const { title, description, type, start, end } = req.body;
+  try {
+    const event = await Event.create({
+      title,
+      description,
+      type,
+      start,
+      end,
+    });
+    res.status(201).json(event);
+  } catch (err) {
+    res.status(500).json(err);
+  }
   const { title, description, type, start, end } = req.body;
   try {
     const event = await Event.create({
@@ -64,6 +104,24 @@ const updateById = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
   }
+  const eventId = req.params.eventId;
+  const { title, description, type, start, end } = req.body;
+  try {
+    const event = await Event.findByPk(eventId);
+    if (!event) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    event.title = title;
+    event.description = description;
+    event.type = type;
+    event.start = start;
+    event.end = end;
+    await event.save();
+    res.status(200).json(event);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
 const deleteById = async (req, res, next) => {
@@ -76,6 +134,48 @@ const deleteById = async (req, res, next) => {
     }
     await event.destroy();
     res.status(204).json();
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const findCoursesBySchool = async (req, res, next) => {
+  const schoolId = req.params.schoolId;
+  try {
+    const events = await Event.findAll({
+      attributes: ["id", "title", "description", "type", "start", "end"],
+      where: {
+        type: {
+          [Op.in]: [EventType.COURSE, EventType.EXAM],
+        },
+      },
+      include: [
+        {
+          model: Module,
+          attributes: ["name"],
+          where: {
+            school_id: schoolId,
+          },
+        },
+        {
+          model: Class,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Room,
+          attributes: ["id", "name"],
+        },
+        {
+          model: User,
+          attributes: ["id", "firstName", "lastName"],
+        },
+      ],
+    });
+    if (!events) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    res.status(200).json(events);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -158,4 +258,5 @@ module.exports = {
   updateById,
   deleteById,
   importIcalFromURL,
+  findCoursesBySchool,
 };
