@@ -63,11 +63,14 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
     const token = localStorage.getItem('token')
 
+
     if (to.path.startsWith('/dashboard/intervenant')) {
+        next()
         if (!token) {
             next('/login')
             return
         }
+
 
         try {
             const response = await fetch('http://localhost:8000/api/user', {
