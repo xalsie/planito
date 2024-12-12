@@ -72,7 +72,7 @@ ModuleClass.belongsTo(Class, {
     onDelete: "CASCADE",
 });
 
-Module.belongsTo(User, {
+ModuleClass.belongsTo(User, {
     foreignKey: "user_id",
     onDelete: "CASCADE",
 });
