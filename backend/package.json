@@ -7,7 +7,6 @@
     "dev": "node --watch index.js",
     "migrate": "node migration.js",
     "fixtures": "node fixtures.js"
-
   },
   "author": "",
   "license": "ISC",
@@ -18,8 +17,9 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "nodemailer": "^6.9.16",
     "node-ical": "^0.20.1",
+    "nodemailer": "^6.9.16",
+    "openai": "^4.76.2",
     "pg": "^8.13.1",
     "sequelize": "^6.37.5",
     "uuid": "^11.0.3"

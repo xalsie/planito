@@ -14,6 +14,7 @@ const authRoutes = require("./routes/auth");
 const userModuleRoutes = require("./routes/userModule");
 const classRoutes = require("./routes/class");
 const moduleClassRoutes = require("./routes/moduleClass");
+const iaRoutes = require("./routes/ia");
 
 const port = process.env.PORT;
 
@@ -44,6 +45,7 @@ app.use("/auth", authRoutes);
 app.use("/userModules", userModuleRoutes);
 app.use("/classes", classRoutes);
 app.use("/moduleClasses", moduleClassRoutes);
+app.use("/ia", iaRoutes);
 
 app.use((error, req, res, next) => {
   console.error("Error occurred:", error); // Affiche l'erreur dans les logs

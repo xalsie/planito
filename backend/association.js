@@ -48,6 +48,12 @@ Event.belongsTo(Material, {
     onDelete: "CASCADE",
 });
 
+Class.hasMany(Event, {
+    foreignKey: "class_id",
+    onDelete: "CASCADE",
+});
+
+
 Event.belongsTo(Class, {
     foreignKey: "class_id",
   onDelete: "CASCADE",

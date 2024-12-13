@@ -10,6 +10,8 @@ const User = require("../models/user");
 const { fi } = require("@faker-js/faker");
 
 const find = async (req, res, next) => {
+    console.log("find");
+    
   try {
     const events = await Event.findAll();
     if (!events) {
