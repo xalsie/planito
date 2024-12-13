@@ -10,8 +10,6 @@ exports.create = async (req, res, next) => {
 
     const { moduleId, userId, settings } = req.body;
 
-    console.log("userId", userId);
-
     const [userModule, created] = await UserModule.findOrCreate({
       where: { module_id: moduleId, user_id: userId, settings: settings },
       defaults: {
@@ -20,7 +18,6 @@ exports.create = async (req, res, next) => {
         settings: settings,
       },
     });
-    console.log("userModule", userModule);
 
     if (created) {
       res.status(201).json(userModule).end();

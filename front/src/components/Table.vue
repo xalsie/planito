@@ -19,8 +19,9 @@
                         <td v-for="column in columns" :key="column.key" class="p-3">
                             {{ row[column.key] }}
                         </td>
-                        <td>
-                            <PencilIcon class="size-4" />
+                        <td class="flex gap-2 mt-2">
+                            <PencilIcon class="size-4" @click="onEdit" />
+                            <TrashIcon class="size-4 text-red-500" @click="() => onOpenModalDelete(row)" />
                         </td>
                     </tr>
                 </tbody>
@@ -30,7 +31,7 @@
 </template>
 
 <script setup>
-import { PencilIcon } from '@heroicons/vue/24/solid'
+import { PencilIcon, TrashIcon } from '@heroicons/vue/24/solid'
 const props = defineProps({
     title: {
         type: String,
@@ -46,5 +47,13 @@ const props = defineProps({
         required: true,
         default: () => [],
     },
+    onEdit: {
+        type: Function,
+        required: true
+    },
+    onOpenModalDelete: {
+        type: Function,
+        required: true
+    }
 });
 </script>

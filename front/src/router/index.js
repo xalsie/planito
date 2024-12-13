@@ -13,6 +13,7 @@ import DisponibiliteView from "../views/intervenant/DisponibiliteView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
+import AvailabilitiesView from "../views/AvailabilitiesView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -83,6 +84,11 @@ const router = createRouter({
           name: "modules-list",
           component: ModulesListView,
         },
+        {
+          path: "disponibilites",
+          name: "availabilities",
+          component: AvailabilitiesView,
+        },
       ],
     },
   ],
@@ -93,9 +99,6 @@ router.beforeEach(async (to, from, next) => {
   const isLoggedIn = userStore.isLoggedIn || localStorage.getItem("isLoggedIn");
   const schoolId = userStore.schoolId || localStorage.getItem("schoolId");
   const userId = userStore.userId || localStorage.getItem("userId");
-
-  // Afficher dans la console pour déboguer
-  console.log(isLoggedIn, schoolId);
 
   // Si l'utilisateur n'est pas connecté et tente d'accéder à une page protégée
   if (
