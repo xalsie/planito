@@ -435,4 +435,6 @@ module.exports = {
   findIntervenantEvents,
   findAvailabilityEventsBySchool,
   findAvailabilityEventsBySchoolByClass,
+  createAvailability,
+  getAvailabilities,
 };
