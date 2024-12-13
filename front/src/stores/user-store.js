@@ -5,6 +5,7 @@ export const useUserStore = defineStore("user", {
   state: () => ({
     isLoggedIn: false,
     schoolId: "",
+    userId: "",
   }),
 
   actions: {
@@ -25,7 +26,8 @@ export const useUserStore = defineStore("user", {
         );
         const userData = await response.json();
         this.isLoggedIn = true;
-        this.schoolId = userData.schoolId;
+        this.schoolId = userData.schoolId ?? "";
+        this.userId = userData.token ?? "";
 
         if (!response.ok) {
           throw new Error("Something went wrong, request failed!");

@@ -92,6 +92,7 @@ router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
   const isLoggedIn = userStore.isLoggedIn || localStorage.getItem("isLoggedIn");
   const schoolId = userStore.schoolId || localStorage.getItem("schoolId");
+  const userId = userStore.userId || localStorage.getItem("userId");
 
   // Afficher dans la console pour déboguer
   console.log(isLoggedIn, schoolId);
@@ -110,28 +111,10 @@ router.beforeEach(async (to, from, next) => {
   if (isLoggedIn && to.path.startsWith("/dashboard/intervenant")) {
     try {
       // Si le token n'existe pas, rediriger vers le login
-      if (!token) {
+      if (!userId) {
         next("/login");
         return;
       }
-
-      const response = await fetch("http://localhost:8000/api/user", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Non autorisé");
-      }
-
-      const user = await response.json();
-      if (user.role !== "ROLE_INTERVENANT") {
-        next("/login"); // Rediriger si l'utilisateur n'a pas le rôle
-        return;
-      }
-
-      localStorage.setItem("user", JSON.stringify(user)); // Sauvegarder les informations de l'utilisateur
       next(); // Passer à la route souhaitée
     } catch (error) {
       console.error("Erreur d'authentification:", error);

@@ -175,6 +175,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 // Données utilisateur
+<<<<<<< Updated upstream
 const localUser = JSON.parse(localStorage.getItem("user"));
 const user = ref({
   firstName: localUser.firstName || "John",
@@ -185,6 +186,13 @@ const user = ref({
       .map((role) => role.charAt(0) + role.slice(1).toLowerCase())
       .join(" - ") || "Intervenant",
 });
+=======
+const user = ref({
+  firstName: 'John',
+  lastName: 'Doe',
+  role: 'ROLE_INTERVENANT'
+})
+>>>>>>> Stashed changes
 
 // Données pour les sélecteurs
 const schools = ref([]);

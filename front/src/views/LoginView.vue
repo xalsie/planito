@@ -71,6 +71,8 @@ const login = async () => {
 		console.log(userStore.schoolId);
 		if (userStore.schoolId) localStorage.setItem("schoolId", userStore.schoolId)
 		localStorage.setItem("isLoggedIn", userStore.isLoggedIn)
+		if (userStore.userId) localStorage.setItem("userId", userStore.userId)
+
 	} catch (error) {
 		console.error("Login failed:", error);
 	}

@@ -6,7 +6,6 @@
             <p class="mx-2">Classe : <span class="font-bold">{{ arg.event.extendedProps.className }}</span></p>
             <p class="mx-2">Module : <span class="font-bold">{{ arg.event.extendedProps.module }}</span></p>
             <p class="mx-2">Intervenant : <span class="font-bold">{{ arg.event.extendedProps.user }}</span></p>
-
         </template>
     </FullCalendar>
 </template>
@@ -65,8 +64,9 @@ const calendarOptions = ref({
         day: 'Jour',
     },
     views: {
+        dayGridMonth: {
+        },
         timeGrid: {
-            dayMaxEventRows: 4,
             slotDuration: '01:00:00',
             slotLabelFormat: {
                 hour: '2-digit',
@@ -75,6 +75,7 @@ const calendarOptions = ref({
             },
         },
     },
+
 });
 
 // Fetch des données et mise à jour des événements
