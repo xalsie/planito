@@ -12,46 +12,45 @@ const router = createRouter({
     routes: [
         {
             path: "/",
-            redirect: "/dashboard/intervenant",
+            redirect: "/dashboard/intervenant"
         },
         {
             path: "/home",
             name: "home",
-            component: HomeView,
+            component: HomeView
         },
         {
             path: "/login",
             name: "login",
-            component: LoginView,
+            component: LoginView
         },
         {
             path: "/register",
             name: "register",
-            component: RegisterView,
+            component: RegisterView
         },
         {
             path: "/dashboard/intervenant",
-            name: "dashboard-intervenant",
             component: DashboardIntervenantView,
             children: [
                 {
                     path: "",
                     name: "intervenant-calendrier",
-                    component: CalendrierView,
+                    component: CalendrierView
                 },
                 {
                     path: "import",
                     name: "intervenant-import",
-                    component: ImportCalendrierView,
+                    component: ImportCalendrierView
                 },
             ],
         },
         {
             path: "/dashboard/ecole",
             name: "dashboard-ecole",
-            component: DashboardSchoolView,
-        },
-    ],
+            component: DashboardSchoolView
+        }
+    ]
 });
 
 router.beforeEach(async (to, from, next) => {

@@ -88,16 +88,12 @@
 
 			if (user.roles.includes('ROLE_INTERVENANT')) {
 				router.push({
-					name: 'dashboard-intervenant'
-				}).then(() => {
-					router.go(0)
-				});
+					name: 'intervenant-calendrier'
+				})
 			} else if (user.roles.includes('ROLE_SCHOOL')) {
 				router.push({
 					name: 'dashboard-ecole'
-				}).then(() => {
-					router.go(0)
-				});
+				})
 			}
 		} catch (error) {
 			console.log("An error occurred");
