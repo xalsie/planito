@@ -64,7 +64,8 @@
 
 						<p class="text-center text-sm text-gray-600 font-poppins">
 							Déjà inscrit ?
-							<router-link to="/login" class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
+							<router-link to="/connexion"
+								class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
 								Se connecter
 							</router-link>
 						</p>

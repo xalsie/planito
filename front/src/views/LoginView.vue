@@ -7,7 +7,11 @@
 					<p class="text-sm text-gray-600 font-poppins">Connectez-vous à votre compte</p>
 				</div>
 
+<<<<<<< HEAD
 				<form @submit.prevent="login" class="space-y-6">
+=======
+				<form @submit.prevent="handleSubmit" class="space-y-6">
+>>>>>>> beta
 					<div class="space-y-4">
 						<div>
 							<label for="email" class="block mb-2 text-sm font-medium text-gray-700 font-poppins">
@@ -42,7 +46,11 @@
 
 						<p class="text-center text-sm text-gray-600 font-poppins">
 							Pas encore de compte ?
+<<<<<<< HEAD
 							<router-link to="/inscription"
+=======
+							<router-link to="/register"
+>>>>>>> beta
 								class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
 								S'inscrire
 							</router-link>
@@ -55,6 +63,7 @@
 </template>
 
 <script setup>
+<<<<<<< HEAD
 import { ref } from 'vue'
 import { useUserStore } from "../stores/user-store"; // Assurez-vous du bon chemin vers le store
 
@@ -83,3 +92,51 @@ const login = async () => {
 
 
 </script>
+=======
+	import { ref } from 'vue'
+	import { useRouter } from 'vue-router'
+
+	const email = ref('')
+	const password = ref('')
+
+	const router = useRouter()
+
+	const handleSubmit = async () => {
+		const response = await fetch('http://localhost:3000/auth/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: email.value,
+				password: password.value
+			})
+		});
+
+		try {
+			const {
+				token,
+				user
+			} = await response.json();
+
+			console.log(token, user)
+
+			localStorage.setItem('token', token)
+			localStorage.setItem('user', JSON.stringify(user))
+
+			if (user.roles.includes('ROLE_INTERVENANT')) {
+				router.push({
+					name: 'intervenant-calendrier'
+				})
+			} else if (user.roles.includes('ROLE_SCHOOL')) {
+				router.push({
+					name: 'dashboard-ecole'
+				})
+			}
+		} catch (error) {
+			console.log("An error occurred");
+			return error;
+		}
+	}
+</script>
+>>>>>>> beta

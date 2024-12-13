@@ -9,4 +9,4 @@
 
 <script setup>
 import SidebarIntervenant from '../components/SidebarIntervenant.vue'
-</script> 
+</script>
