@@ -5,8 +5,14 @@ const router = express.Router();
 
 router.get("/", eventController.find);
 router.post("/", eventController.create);
-router.post("/availability", eventController.createAvailability);
-router.get("/availabilities/:classId?", eventController.getAvailabilities);
+router.get(
+  "/availability/school/:schoolId",
+  eventController.findAvailabilityEventsBySchool
+);
+router.get(
+  "/availability/school/:schoolId/class/:classId",
+  eventController.findAvailabilityEventsBySchoolByClass
+);
 
 router.get(
   "/intervenant/:intervenantId",
