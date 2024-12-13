@@ -83,6 +83,11 @@ const router = createRouter({
           name: "modules-list",
           component: ModulesListView,
         },
+        {
+          path: "preferences",
+          name: "preferences",
+          component: PreferencesView,
+        },
       ],
     },
   ],
