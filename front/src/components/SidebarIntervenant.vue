@@ -13,10 +13,8 @@
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">École</label>
-          <select 
-            v-model="selectedSchool"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          >
+          <select v-model="selectedSchool"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             <option value="">Sélectionner une école</option>
             <option v-for="school in schools" :key="school.id" :value="school.id">
               {{ school.name }}
@@ -26,11 +24,8 @@
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Classe</label>
-          <select 
-            v-model="selectedClass"
-            :disabled="!selectedSchool"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          >
+          <select v-model="selectedClass" :disabled="!selectedSchool"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             <option value="">Sélectionner une classe</option>
             <option v-for="class_ in filteredClasses" :key="class_.id" :value="class_.id">
               {{ class_.name }}
@@ -40,11 +35,8 @@
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Module</label>
-          <select 
-            v-model="selectedModule"
-            :disabled="!selectedClass"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          >
+          <select v-model="selectedModule" :disabled="!selectedClass"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             <option value="">Sélectionner un module</option>
             <option v-for="module in filteredModules" :key="module.id" :value="module.id">
               {{ module.name }}
@@ -52,11 +44,8 @@
           </select>
         </div>
 
-        <button
-          @click="handleValidation"
-          :disabled="!selectedModule"
-          class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button @click="handleValidation" :disabled="!selectedModule"
+          class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
           Valider la sélection
         </button>
       </div>
@@ -65,25 +54,17 @@
     <div class="divide-y divide-gray-200">
       <ul class="pt-4 pb-2 space-y-1">
         <li v-for="(item, index) in menuItems" :key="index">
-          <router-link 
-            v-if="item.type === 'link'"
-            :to="{ name: item.routeName }" 
-            class="flex items-center p-3 space-x-3 rounded-md hover:bg-blue-50 text-gray-600 hover:text-blue-600 transition-colors font-poppins"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" 
-                 class="w-5 h-5 fill-current" 
-                 v-html="item.icon">
+          <router-link v-if="item.type === 'link'" :to="{ name: item.routeName }"
+            class="flex items-center p-3 space-x-3 rounded-md hover:bg-blue-50 text-gray-600 hover:text-blue-600 transition-colors font-poppins">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 fill-current"
+              v-html="item.icon">
             </svg>
             <span>{{ item.label }}</span>
           </router-link>
-          <button
-            v-else
-            @click="openImportModal"
-            class="flex items-center p-3 space-x-3 rounded-md hover:bg-blue-50 text-gray-600 hover:text-blue-600 transition-colors font-poppins w-full"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" 
-                 class="w-5 h-5 fill-current" 
-                 v-html="item.icon">
+          <button v-else @click="openImportModal"
+            class="flex items-center p-3 space-x-3 rounded-md hover:bg-blue-50 text-gray-600 hover:text-blue-600 transition-colors font-poppins w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 fill-current"
+              v-html="item.icon">
             </svg>
             <span>{{ item.label }}</span>
           </button>
@@ -96,24 +77,16 @@
         <h2 class="text-xl font-bold mb-4">Import de Calendrier</h2>
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-1">Lien du calendrier</label>
-          <input 
-            v-model="calendarUrl"
-            type="text"
+          <input v-model="calendarUrl" type="text"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Entrez l'URL du calendrier"
-          >
+            placeholder="Entrez l'URL du calendrier">
         </div>
         <div class="flex justify-end space-x-3">
-          <button 
-            @click="closeImportModal"
-            class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-          >
+          <button @click="closeImportModal" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
             Annuler
           </button>
-          <button 
-            @click="importCalendar"
-            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
+          <button @click="importCalendar"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
             Importer
           </button>
         </div>
@@ -121,12 +94,12 @@
     </div>
 
     <div class="absolute bottom-0 w-64 p-6 border-t border-gray-200 bg-white">
-      <button 
-        @click="handleLogout"
-        class="flex items-center space-x-3 text-gray-600 hover:text-blue-600 transition-colors font-poppins"
-      >
+      <button @click="handleLogout"
+        class="flex items-center space-x-3 text-gray-600 hover:text-blue-600 transition-colors font-poppins">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 fill-current">
-          <path d="M440,424V88H352V13.005L88,58.522V424H16v32h86.9L352,490.358V120h56V456h88V424ZM320,453.642,120,426.056V85.478L320,51Z"></path>
+          <path
+            d="M440,424V88H352V13.005L88,58.522V424H16v32h86.9L352,490.358V120h56V456h88V424ZM320,453.642,120,426.056V85.478L320,51Z">
+          </path>
           <rect width="32" height="64" x="256" y="232"></rect>
         </svg>
         <span>Déconnexion</span>
@@ -162,13 +135,13 @@ const selectedClass = ref('')
 const selectedModule = ref('')
 
 // Filtres pour les sélecteurs
-const filteredClasses = computed(() => 
+const filteredClasses = computed(() =>
   selectedSchool.value
     ? classes.value.filter(c => c.schoolId === selectedSchool.value)
     : []
 )
 
-const filteredModules = computed(() => 
+const filteredModules = computed(() =>
   selectedClass.value
     ? modules.value.filter(m => m.classId === selectedClass.value)
     : []
@@ -252,7 +225,7 @@ const closeImportModal = () => {
 
 const handleLogout = () => {
   const token = localStorage.getItem('token')
-  
+
   localStorage.removeItem('token')
   localStorage.removeItem('user')
   router.push('/login')
@@ -268,4 +241,4 @@ const handleValidation = () => {
     })
   }
 }
-</script> 
+</script>

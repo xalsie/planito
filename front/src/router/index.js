@@ -1,92 +1,145 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "../stores/user-store"; // Assurez-vous du bon chemin vers le store
+
 import DashboardIntervenantView from "../views/DashboardIntervenantView.vue";
 import DashboardSchoolView from "../views/DashboardSchoolView.vue";
+import IntervenantsListView from "../views/IntervenantsListView.vue";
+import RoomsListView from "../views/RoomsListView.vue";
+import ModulesListView from "../views/ModulesListView.vue";
+import CalendarView from "../views/CalendarView.vue";
 import CalendrierView from "../views/intervenant/CalendrierView.vue";
 import ImportCalendrierView from "../views/intervenant/ImportCalendrierView.vue";
+import DisponibiliteView from "../views/intervenant/DisponibiliteView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
-    routes: [
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: "/",
+      redirect: "/dashboard/intervenant",
+    },
+    {
+      path: "/home",
+      name: "home",
+      component: HomeView,
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: LoginView,
+    },
+    {
+      path: "/register",
+      name: "register",
+      component: RegisterView,
+    },
+    {
+      path: "/dashboard/intervenant",
+      name: "dashboard-intervenant",
+      component: DashboardIntervenantView,
+      children: [
         {
-            path: "/",
-            redirect: "/dashboard/intervenant",
+          path: "",
+          name: "intervenant-calendrier",
+          component: CalendrierView,
         },
         {
-            path: "/home",
-            name: "home",
-            component: HomeView,
+          path: "import",
+          name: "intervenant-import",
+          component: ImportCalendrierView,
         },
         {
-            path: "/login",
-            name: "login",
-            component: LoginView,
+          path: "disponibilite",
+          name: "intervenant-disponibilite",
+          component: DisponibiliteView,
+        },
+      ],
+    },
+    {
+      path: "/dashboard/ecole",
+      name: "dashboard-ecole",
+      component: DashboardSchoolView,
+      children: [
+        {
+          path: "",
+          name: "calendar",
+          component: CalendarView,
         },
         {
-            path: "/register",
-            name: "register",
-            component: RegisterView,
+          path: "intervenants",
+          name: "intervenants-list",
+          component: IntervenantsListView,
         },
         {
-            path: "/dashboard/intervenant",
-            name: "dashboard-intervenant",
-            component: DashboardIntervenantView,
-            children: [
-                {
-                    path: "",
-                    name: "intervenant-calendrier",
-                    component: CalendrierView,
-                },
-                {
-                    path: "import",
-                    name: "intervenant-import",
-                    component: ImportCalendrierView,
-                },
-            ],
+          path: "salles",
+          name: "rooms-list",
+          component: RoomsListView,
         },
         {
-            path: "/dashboard/ecole",
-            name: "dashboard-ecole",
-            component: DashboardSchoolView,
+          path: "modules",
+          name: "modules-list",
+          component: ModulesListView,
         },
-    ],
+      ],
+    },
+  ],
 });
 
 router.beforeEach(async (to, from, next) => {
-    const token = localStorage.getItem("token");
-    const roles = JSON.parse(localStorage.getItem("user"))?.roles;
+  const userStore = useUserStore();
+  const isLoggedIn = userStore.isLoggedIn || localStorage.getItem("isLoggedIn");
+  const schoolId = userStore.schoolId || localStorage.getItem("schoolId");
 
-    if (to.path.startsWith("/dashboard/intervenant")) {
-        if (!token) {
-            next("/login");
-            return;
-        }
+  // Afficher dans la console pour déboguer
+  console.log(isLoggedIn, schoolId);
 
-        if (roles && roles.includes("ROLE_INTERVENANT")) {
-            next();
-            return;
-        }
+  // Si l'utilisateur n'est pas connecté et tente d'accéder à une page protégée
+  if (
+    (to.path.startsWith("/dashboard/intervenant") ||
+      to.path.startsWith("/dashboard/ecole")) &&
+    !isLoggedIn
+  ) {
+    next("/login"); // Rediriger immédiatement vers la page de login
+    return;
+  }
 
-        console.error("Erreur d'authentification:", error);
+  // Si l'utilisateur est connecté, vérifier son rôle
+  if (isLoggedIn && to.path.startsWith("/dashboard/intervenant")) {
+    try {
+      // Si le token n'existe pas, rediriger vers le login
+      if (!token) {
         next("/login");
-    } else if (to.path.startsWith("/dashboard/ecole")) {
-        if (!token) {
-            next("/login");
-            return;
-        }
+        return;
+      }
 
-        if (roles && roles.includes("ROLE_SCHOOL")) {
-            next();
-            return;
-        }
+      const response = await fetch("http://localhost:8000/api/user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        console.error("Erreur d'authentification:", error);
-        next("/login");
-    } else {
-        next();
+      if (!response.ok) {
+        throw new Error("Non autorisé");
+      }
+
+      const user = await response.json();
+      if (user.role !== "ROLE_INTERVENANT") {
+        next("/login"); // Rediriger si l'utilisateur n'a pas le rôle
+        return;
+      }
+
+      localStorage.setItem("user", JSON.stringify(user)); // Sauvegarder les informations de l'utilisateur
+      next(); // Passer à la route souhaitée
+    } catch (error) {
+      console.error("Erreur d'authentification:", error);
+      next("/login"); // En cas d'erreur, rediriger vers le login
     }
+  } else {
+    next(); // Si l'utilisateur est déjà connecté ou si la page n'est pas protégée, laisser passer
+  }
 });
 
 export default router;

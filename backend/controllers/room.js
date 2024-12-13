@@ -2,8 +2,8 @@ const Room = require("../models/room");
 
 exports.create = async (req, res, next) => {
   try {
-    const { name } = req.body;
-    await Room.create({ name });
+    const { name, schoolId } = req.body;
+    await Room.create({ name, school_id: schoolId });
     res.sendStatus(201);
   } catch (err) {
     if (!err.statusCode) {

@@ -7,7 +7,7 @@
 					<p class="text-sm text-gray-600 font-poppins">Connectez-vous à votre compte</p>
 				</div>
 
-				<form @submit.prevent="handleSubmit" class="space-y-6">
+				<form @submit.prevent="login" class="space-y-6">
 					<div class="space-y-4">
 						<div>
 							<label for="email" class="block mb-2 text-sm font-medium text-gray-700 font-poppins">
@@ -42,7 +42,7 @@
 
 						<p class="text-center text-sm text-gray-600 font-poppins">
 							Pas encore de compte ?
-							<router-link to="/register"
+							<router-link to="/inscription"
 								class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
 								S'inscrire
 							</router-link>
@@ -55,53 +55,25 @@
 </template>
 
 <script setup>
-	import { ref } from 'vue'
-	import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { useUserStore } from "../stores/user-store"; // Assurez-vous du bon chemin vers le store
 
-	const email = ref('')
-	const password = ref('')
 
-	const router = useRouter()
+const email = ref('')
+const password = ref('')
 
-	const handleSubmit = async () => {
-		const response = await fetch('http://localhost:3000/auth/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				email: email.value,
-				password: password.value
-			})
-		});
+const userStore = useUserStore();
 
-		try {
-			const {
-				token,
-				user
-			} = await response.json();
 
-			console.log(token, user)
-
-			localStorage.setItem('token', token)
-			localStorage.setItem('user', JSON.stringify(user))
-
-			if (user.roles.includes('ROLE_INTERVENANT')) {
-				router.push({
-					name: 'dashboard-intervenant'
-				}).then(() => {
-					router.go(0)
-				});
-			} else if (user.roles.includes('ROLE_SCHOOL')) {
-				router.push({
-					name: 'dashboard-ecole'
-				}).then(() => {
-					router.go(0)
-				});
-			}
-		} catch (error) {
-			console.log("An error occurred");
-			return error;
-		}
+const login = async () => {
+	try {
+		await userStore.login(email.value, password.value);
+		console.log(userStore.schoolId);
+		if (userStore.schoolId) localStorage.setItem("schoolId", userStore.schoolId)
+		localStorage.setItem("isLoggedIn", userStore.isLoggedIn)
+	} catch (error) {
+		console.error("Login failed:", error);
 	}
+}
+
 </script>

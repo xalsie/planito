@@ -104,7 +104,7 @@ exports.findIntervenantBySchool = async (req, res, next) => {
       include: [
         {
           model: User,
-          attributes: ["lastName", "firstName", "email", "roles"],
+          attributes: ["id", "lastName", "firstName", "email", "roles"],
           where: {
             roles: {
               [Op.contains]: ["ROLE_INTERVENANT"],
@@ -152,6 +152,7 @@ exports.findIntervenantBySchool = async (req, res, next) => {
         )
       ).join(", ");
       return {
+        id: user.id,
         lastname: user.lastName,
         firstname: user.firstName,
         email: user.email,

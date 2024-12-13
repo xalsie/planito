@@ -1,12 +1,7 @@
 <template>
   <div class="bg-white p-4 rounded-lg shadow">
-    <FullCalendar 
-      :options="calendarOptions"
-      @select="handleSelect"
-      @eventClick="handleEventClick"
-      @eventDrop="handleEventChange"
-      @eventResize="handleEventChange"
-    />
+    <FullCalendar :options="calendarOptions" @select="handleSelect" @eventClick="handleEventClick"
+      @eventDrop="handleEventChange" @eventResize="handleEventChange" />
   </div>
 </template>
 
@@ -25,7 +20,7 @@ const handleSelect = (selectInfo) => {
   const title = prompt('Entrez un titre pour l\'événement:')
   if (title) {
     const calendarApi = selectInfo.view.calendar
-    calendarApi.unselect() 
+    calendarApi.unselect()
 
     calendarApi.addEvent({
       title,
@@ -82,4 +77,4 @@ const calendarOptions = {
     }
   }
 }
-</script> 
+</script>
