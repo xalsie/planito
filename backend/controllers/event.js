@@ -238,7 +238,7 @@ const findEventsBySchoolByClass = async (req, res, next) => {
 
 const findIntervenantEvents = async (req, res, next) => {
   const userId = req.params.intervenantId;
-  
+
   try {
     const events = await Event.findAll({
       attributes: ["id", "title", "description", "type", "start", "end"],
@@ -325,6 +325,72 @@ const findIntervenantEventsBySchool = async (req, res, next) => {
   }
 };
 
+const findAvailabilityEventsBySchool = async (req, res, next) => {
+  const schoolId = req.params.schoolId;
+  try {
+    const events = await Event.findAll({
+      attributes: ["id", "type", "start", "end"],
+      where: {
+        type: EventType.AVAILABILITY,
+      },
+      include: [
+        {
+          model: Class,
+          attributes: ["name"],
+          where: {
+            school_id: schoolId,
+          },
+        },
+        {
+          model: Class,
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+    if (!events) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const findAvailabilityEventsBySchoolByClass = async (req, res, next) => {
+  const schoolId = req.params.schoolId;
+  const classId = req.params.classId;
+  try {
+    const events = await Event.findAll({
+      attributes: ["id", "type", "start", "end"],
+      where: {
+        type: EventType.AVAILABILITY,
+      },
+      include: [
+        {
+          model: Class,
+          attributes: ["name"],
+          where: {
+            school_id: schoolId,
+            id: classId,
+          },
+        },
+        {
+          model: Class,
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+    if (!events) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 module.exports = {
   find,
   findById,
@@ -336,4 +402,6 @@ module.exports = {
   findEventsBySchoolByClass,
   findIntervenantEventsBySchool,
   findIntervenantEvents,
+  findAvailabilityEventsBySchool,
+  findAvailabilityEventsBySchoolByClass
 };
