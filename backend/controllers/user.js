@@ -146,6 +146,12 @@ exports.findIntervenantBySchool = async (req, res, next) => {
         )
       ).join(", ");
 
+      const preferences = Array.from(
+        new Set(
+          user.userModules?.map((userModule) => userModule.settings) || []
+        )
+      ).join(", ");
+
       const classes = Array.from(
         new Set(
           user.moduleClasses?.map((moduleClass) => moduleClass.class.name) || []
@@ -158,6 +164,7 @@ exports.findIntervenantBySchool = async (req, res, next) => {
         email: user.email,
         roles: roles,
         modules: modules,
+        preferences: preferences,
         classes: classes,
       };
     });

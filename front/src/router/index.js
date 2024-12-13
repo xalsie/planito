@@ -13,6 +13,7 @@ import DisponibiliteView from "../views/intervenant/DisponibiliteView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
+import PreferencesView from "../views/PreferencesView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

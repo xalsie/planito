@@ -64,12 +64,10 @@
             <col />
             <col />
             <col />
-            <col />
             <col class="w-5" />
           </colgroup>
           <thead>
             <tr class="dark:bg-gray-300">
-              <th class="p-3">A-Z</th>
               <th class="p-3">Name</th>
               <th class="p-3">Modules</th>
               <th class="p-3">Préférences</th>
@@ -81,8 +79,37 @@
             </tr>
           </thead>
           <tbody class="border-b dark:bg-gray-50 dark:border-gray-300">
-            <tr>
-              <td class="px-3 text-2xl font-medium dark:text-gray-600">A</td>
+            <tr v-for="intervenant in intervenants" :key="intervenant.id">
+              <td class="px-3 py-2">
+                <p>
+                  {{ (intervenant.firstname, intervenant.lastname) }}
+                </p>
+              </td>
+              <td class="px-3 py-2">
+                <span>{{ intervenant.modules }}</span>
+              </td>
+              <td class="px-3 py-2">
+                <p>{{ intervenant.preferences }}</p>
+              </td>
+              <td class="px-3 py-2"></td>
+              <td class="px-3 py-2"></td>
+              <td class="px-3 py-2">
+                <button
+                  type="button"
+                  title="Open details"
+                  class="p-1 rounded-full dark:text-gray-400 hover:dark:bg-gray-300 focus:dark:bg-gray-300"
+                >
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current">
+                    <path
+                      d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z"
+                    ></path>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+
+          <!-- <tr>
               <td class="px-3 py-2">
                 <p>Dwight Adams</p>
               </td>
@@ -146,7 +173,7 @@
                 </button>
               </td>
             </tr>
-          </tbody>
+          </tbody> -->
           <tbody class="border-b dark:bg-gray-50 dark:border-gray-300">
             <tr>
               <td class="px-3 text-2xl font-medium dark:text-gray-600">B</td>
@@ -276,12 +303,31 @@
     </div>
   </section>
 </template>
+
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useUserStore } from "../stores/user-store";
 
 const userStore = useUserStore();
+const schoolId = userStore.schoolId || localStorage.getItem("schoolId");
+const intervenants = ref([]);
 
-console.log(userStore);
-onMounted();
+const fetchGetData = async (endpoint) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}${endpoint}`
+    );
+    if (!response.ok) {
+      throw new Error("Something went wrong, request failed!");
+    }
+    return response.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+onMounted(async () => {
+  intervenants.value = await fetchGetData(`users/intervenants/${schoolId}`);
+  console.log("intervenants:", intervenants);
+});
 </script>
