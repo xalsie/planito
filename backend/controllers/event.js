@@ -20,16 +20,6 @@ const find = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
   }
-  try {
-    const events = await Event.findAll();
-    if (!events) {
-      res.status(404).json("Event not found");
-      return;
-    }
-    res.status(200).json(events);
-  } catch (err) {
-    res.status(500).json(err);
-  }
 };
 
 const findById = async (req, res, next) => {
