@@ -43,17 +43,6 @@ const findById = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
   }
-  const userId = req.params.userId;
-  try {
-    const event = await Event.findByPk(userId);
-    if (!event) {
-      res.status(404).json("Event not found");
-      return;
-    }
-    res.status(200).json(event);
-  } catch (err) {
-    res.status(500).json(err);
-  }
 };
 
 const create = async (req, res, next) => {
@@ -70,40 +59,9 @@ const create = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
   }
-  const { title, description, type, start, end } = req.body;
-  try {
-    const event = await Event.create({
-      title,
-      description,
-      type,
-      start,
-      end,
-    });
-    res.status(201).json(event);
-  } catch (err) {
-    res.status(500).json(err);
-  }
 };
 
 const updateById = async (req, res, next) => {
-  const eventId = req.params.eventId;
-  const { title, description, type, start, end } = req.body;
-  try {
-    const event = await Event.findByPk(eventId);
-    if (!event) {
-      res.status(404).json("Event not found");
-      return;
-    }
-    event.title = title;
-    event.description = description;
-    event.type = type;
-    event.start = start;
-    event.end = end;
-    await event.save();
-    res.status(200).json(event);
-  } catch (err) {
-    res.status(500).json(err);
-  }
   const eventId = req.params.eventId;
   const { title, description, type, start, end } = req.body;
   try {

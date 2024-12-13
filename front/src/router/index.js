@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "../stores/user-store"; // Assurez-vous du bon chemin vers le store
+
 import DashboardIntervenantView from "../views/DashboardIntervenantView.vue";
 import DashboardSchoolView from "../views/DashboardSchoolView.vue";
 import IntervenantsListView from "../views/IntervenantsListView.vue";
@@ -87,15 +89,32 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const token = localStorage.getItem("token");
-  if (to.path.startsWith("/dashboard/intervenant")) {
-    next();
-    if (!token) {
-      next("/login");
-      return;
-    }
+  const userStore = useUserStore();
+  const isLoggedIn = userStore.isLoggedIn || localStorage.getItem("isLoggedIn");
+  const schoolId = userStore.schoolId || localStorage.getItem("schoolId");
 
+  // Afficher dans la console pour déboguer
+  console.log(isLoggedIn, schoolId);
+
+  // Si l'utilisateur n'est pas connecté et tente d'accéder à une page protégée
+  if (
+    (to.path.startsWith("/dashboard/intervenant") ||
+      to.path.startsWith("/dashboard/ecole")) &&
+    !isLoggedIn
+  ) {
+    next("/login"); // Rediriger immédiatement vers la page de login
+    return;
+  }
+
+  // Si l'utilisateur est connecté, vérifier son rôle
+  if (isLoggedIn && to.path.startsWith("/dashboard/intervenant")) {
     try {
+      // Si le token n'existe pas, rediriger vers le login
+      if (!token) {
+        next("/login");
+        return;
+      }
+
       const response = await fetch("http://localhost:8000/api/user", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -108,18 +127,18 @@ router.beforeEach(async (to, from, next) => {
 
       const user = await response.json();
       if (user.role !== "ROLE_INTERVENANT") {
-        next("/login");
+        next("/login"); // Rediriger si l'utilisateur n'a pas le rôle
         return;
       }
 
-      localStorage.setItem("user", JSON.stringify(user));
-      next();
+      localStorage.setItem("user", JSON.stringify(user)); // Sauvegarder les informations de l'utilisateur
+      next(); // Passer à la route souhaitée
     } catch (error) {
       console.error("Erreur d'authentification:", error);
-      next("/login");
+      next("/login"); // En cas d'erreur, rediriger vers le login
     }
   } else {
-    next();
+    next(); // Si l'utilisateur est déjà connecté ou si la page n'est pas protégée, laisser passer
   }
 });
 

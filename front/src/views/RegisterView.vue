@@ -13,81 +13,58 @@
 							<label for="name" class="block mb-2 text-sm font-medium text-gray-700 font-poppins">
 								Nom complet
 							</label>
-							<input 
-								type="text" 
-								name="name" 
-								id="name" 
-								placeholder="Nom complet" 
+							<input type="text" name="name" id="name" placeholder="Nom complet"
 								class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-poppins"
-								required
-							>
+								required>
 						</div>
 
 						<div>
 							<label for="email" class="block mb-2 text-sm font-medium text-gray-700 font-poppins">
 								Adresse email
 							</label>
-							<input 
-								type="email" 
-								name="email" 
-								id="email" 
-								placeholder="exemple@email.com" 
+							<input type="email" name="email" id="email" placeholder="exemple@email.com"
 								class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-poppins"
-								required
-							>
+								required>
 						</div>
 
 						<div>
 							<label for="password" class="block mb-2 text-sm font-medium text-gray-700 font-poppins">
 								Mot de passe
 							</label>
-							<input 
-								type="password" 
-								name="password" 
-								id="password" 
-								placeholder="••••••••" 
+							<input type="password" name="password" id="password" placeholder="••••••••"
 								class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-poppins"
-								required
-							>
+								required>
 						</div>
 
 						<div>
-							<label for="confirm_password" class="block mb-2 text-sm font-medium text-gray-700 font-poppins">
+							<label for="confirm_password"
+								class="block mb-2 text-sm font-medium text-gray-700 font-poppins">
 								Confirmer le mot de passe
 							</label>
-							<input 
-								type="password" 
-								name="confirm_password" 
-								id="confirm_password" 
-								placeholder="••••••••" 
+							<input type="password" name="confirm_password" id="confirm_password" placeholder="••••••••"
 								class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-poppins"
-								required
-							>
+								required>
 						</div>
 					</div>
 
 					<div class="space-y-6">
 						<div class="flex items-center">
-							<input 
-								type="checkbox" 
-								id="terms" 
-								class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-							>
+							<input type="checkbox" id="terms"
+								class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
 							<label for="terms" class="ml-2 block text-sm text-gray-700 font-poppins">
-								J'accepte les <a href="#" class="text-blue-600 hover:text-blue-800">conditions d'utilisation</a>
+								J'accepte les <a href="#" class="text-blue-600 hover:text-blue-800">conditions
+									d'utilisation</a>
 							</label>
 						</div>
 
-						<button 
-							type="submit" 
-							class="w-full bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors font-poppins"
-						>
+						<button type="submit"
+							class="w-full bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors font-poppins">
 							CRÉER MON COMPTE
 						</button>
 
 						<p class="text-center text-sm text-gray-600 font-poppins">
 							Déjà inscrit ?
-							<router-link to="/connexion" class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
+							<router-link to="/login" class="text-blue-600 hover:text-blue-800 font-bold font-poppins">
 								Se connecter
 							</router-link>
 						</p>
@@ -99,4 +76,4 @@
 </template>
 
 <script setup>
-</script> 
+</script>

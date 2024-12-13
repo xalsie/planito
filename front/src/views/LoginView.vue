@@ -7,7 +7,7 @@
 					<p class="text-sm text-gray-600 font-poppins">Connectez-vous à votre compte</p>
 				</div>
 
-				<form @submit.prevent="handleSubmit" class="space-y-6">
+				<form @submit.prevent="login" class="space-y-6">
 					<div class="space-y-4">
 						<div>
 							<label for="email" class="block mb-2 text-sm font-medium text-gray-700 font-poppins">
@@ -56,9 +56,28 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useUserStore } from "../stores/user-store"; // Assurez-vous du bon chemin vers le store
+
 
 const email = ref('')
 const password = ref('')
+
+const userStore = useUserStore();
+
+
+const login = async () => {
+	try {
+		await userStore.login(email.value, password.value);
+		console.log(userStore.schoolId);
+		if (userStore.schoolId) localStorage.setItem("schoolId", userStore.schoolId)
+		localStorage.setItem("isLoggedIn", userStore.isLoggedIn)
+
+
+
+	} catch (error) {
+		console.error("Login failed:", error);
+	}
+}
 
 
 

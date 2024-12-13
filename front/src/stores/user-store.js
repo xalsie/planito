@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
-    loggedIn: false,
+    isLoggedIn: false,
     schoolId: "",
   }),
 
@@ -23,8 +23,8 @@ export const useUserStore = defineStore("user", {
             },
           }
         );
-        userData = await response.json();
-        this.loggedIn = true;
+        const userData = await response.json();
+        this.isLoggedIn = true;
         this.schoolId = userData.schoolId;
 
         if (!response.ok) {

@@ -19,7 +19,7 @@ exports.login = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    if (user.roles.contains("ROLE_STAFF")) {
+    if (user.roles.includes("ROLE_STAFF")) {
       const userSchool = await UserSchool.findOne({
         where: { user_id: user.id },
       });
