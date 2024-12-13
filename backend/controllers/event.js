@@ -43,17 +43,6 @@ const findById = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
   }
-  const userId = req.params.userId;
-  try {
-    const event = await Event.findByPk(userId);
-    if (!event) {
-      res.status(404).json("Event not found");
-      return;
-    }
-    res.status(200).json(event);
-  } catch (err) {
-    res.status(500).json(err);
-  }
 };
 
 const create = async (req, res, next) => {
@@ -70,40 +59,9 @@ const create = async (req, res, next) => {
   } catch (err) {
     res.status(500).json(err);
   }
-  const { title, description, type, start, end } = req.body;
-  try {
-    const event = await Event.create({
-      title,
-      description,
-      type,
-      start,
-      end,
-    });
-    res.status(201).json(event);
-  } catch (err) {
-    res.status(500).json(err);
-  }
 };
 
 const updateById = async (req, res, next) => {
-  const eventId = req.params.eventId;
-  const { title, description, type, start, end } = req.body;
-  try {
-    const event = await Event.findByPk(eventId);
-    if (!event) {
-      res.status(404).json("Event not found");
-      return;
-    }
-    event.title = title;
-    event.description = description;
-    event.type = type;
-    event.start = start;
-    event.end = end;
-    await event.save();
-    res.status(200).json(event);
-  } catch (err) {
-    res.status(500).json(err);
-  }
   const eventId = req.params.eventId;
   const { title, description, type, start, end } = req.body;
   try {
@@ -189,7 +147,6 @@ const importIcalFromURL = async (req, res, next) => {
       throw error;
     }
     const { url, userId } = req.body;
-    console.log("url", url);
 
     await ical.fromURL(url, {}, async function (err, data) {
       if (err) {
@@ -197,35 +154,28 @@ const importIcalFromURL = async (req, res, next) => {
         error.statusCode = 500;
         throw error;
       }
-      let count = 0;
       const currentDate = new Date();
-      // 31 Décembre de l'année prochaine
       const nextYear = new Date(currentDate.getFullYear() + 1, 11, 31);
-      console.log("data");
 
       for (let k in data) {
         if (data.hasOwnProperty(k)) {
           const ev = data[k];
+          console.log("Event: " + ev.summary);
 
+          if (
+            ev.summary === "osuvghiliy" ||
+            ev.summary === "izefubd" ||
+            ev.summary === "okokok"
+          ) {
+            console.log("Event1: " + ev.type);
+          }
           if (ev.type === "VEVENT") {
             const startDate = new Date(ev.start);
             const endDate = new Date(ev.end);
-            if (startDate >= currentDate)
-              console.log(
-                "Date",
-                ++count,
-                ":",
-                startDate,
-                " >= ",
-                currentDate,
-                " = ",
-                startDate >= currentDate
-              );
-            else ++count;
 
             if (startDate >= currentDate && startDate <= nextYear) {
-              console.log("before create");
-              const event = Event.create({
+              console.log("Event2: " + ev.summary);
+              const event = await Event.create({
                 title: ev.summary || "No title",
                 description: ev.description || "No description",
                 type: EventType.UNAVAILABILITY,
@@ -234,14 +184,12 @@ const importIcalFromURL = async (req, res, next) => {
                 user_id: userId,
                 isImported: true,
               });
-              console.log("event");
-              res.status(201).json(event).end();
-              return;
             }
           }
         }
       }
-      console.log("itérations: ", count);
+      res.status(201).json("events imported");
+      return;
     });
   } catch (err) {
     if (!err.statusCode) {
