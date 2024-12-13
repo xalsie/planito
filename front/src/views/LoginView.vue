@@ -68,7 +68,6 @@ const userStore = useUserStore();
 const login = async () => {
 	try {
 		await userStore.login(email.value, password.value);
-		console.log(userStore.schoolId);
 		if (userStore.schoolId) localStorage.setItem("schoolId", userStore.schoolId)
 		localStorage.setItem("isLoggedIn", userStore.isLoggedIn)
 		if (userStore.userId) localStorage.setItem("userId", userStore.userId)

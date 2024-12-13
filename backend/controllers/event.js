@@ -52,6 +52,37 @@ const create = async (req, res, next) => {
   }
 };
 
+const createAvailability = async (req, res, next) => {
+  const { classId, type, start, end } = req.body;
+  try {
+    const event = await Event.create({
+      class_id: classId,
+      type,
+      start,
+      end,
+    });
+    res.sendStatus(201);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const getAvailabilities = async (req, res, next) => {
+  const { classId } = req.params;
+  try {
+    const whereObj = { type: EventType.AVAILABILITY };
+    if (classId) whereObj.class_id = classId;
+    const availabilities = await Event.findAll({
+      attributes: ["id", "type", "start", "end", "class_id"],
+      where: whereObj,
+    });
+
+    res.status(200).json(availabilities);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 const updateById = async (req, res, next) => {
   const eventId = req.params.eventId;
   const { title, description, type, start, end } = req.body;
@@ -453,5 +484,7 @@ module.exports = {
   findIntervenantEvents,
   findAvailabilityEventsBySchool,
   findAvailabilityEventsBySchoolByClass,
-  findEventsByUser
+  findEventsByUser,
+  createAvailability,
+  getAvailabilities,
 };

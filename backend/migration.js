@@ -12,7 +12,6 @@ const Event = require("./models/event");
 const UserModule = require("./models/userModule");
 const ModuleClass = require("./models/moduleClass");
 const UserSchool = require("./models/userSchool");
-const ModuleClass = require("./models/moduleClass");
 
 School.belongsTo(User, {
   foreignKey: "user_id",
