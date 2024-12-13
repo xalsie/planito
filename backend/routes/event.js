@@ -17,4 +17,6 @@ router.patch("/:eventId", eventController.updateById);
 router.delete("/:eventId", eventController.deleteById);
 router.post("/import", eventController.importIcalFromURL);
 
+router.get("/user/:userId", eventController.findEventsByUser);
+
 module.exports = router;

@@ -50,13 +50,13 @@ Event.belongsTo(Material, {
 
 Event.belongsTo(Class, {
     foreignKey: "class_id",
-  onDelete: "CASCADE",
+    onDelete: "CASCADE",
 });
 
 User.hasMany(UserModule, {
     foreignKey: "user_id",
-      onDelete: "CASCADE",
-  });
+    onDelete: "CASCADE",
+});
 
 UserModule.belongsTo(User, {
     foreignKey: "user_id",
@@ -91,27 +91,52 @@ ModuleClass.belongsTo(User, {
 User.hasMany(UserSchool, {
     foreignKey: "user_id",
     onDelete: "CASCADE",
-  });
+});
+
 UserSchool.belongsTo(User, {
-  foreignKey: "user_id",
-  onDelete: "CASCADE",
+    foreignKey: "user_id",
+    onDelete: "CASCADE",
 });
 
 UserSchool.belongsTo(School, {
-  foreignKey: "school_id",
-  onDelete: "CASCADE",
+    foreignKey: "school_id",
+    onDelete: "CASCADE",
 });
 
-
 Module.belongsTo(School, {
-  foreignKey: "school_id",
-  onDelete: "CASCADE",
+    foreignKey: "school_id",
+    onDelete: "CASCADE",
 });
 
 Class.belongsTo(School, {
     foreignKey: "school_id",
     onDelete: "CASCADE",
-    });
+});
+
+Class.belongsTo(Module, {
+    foreignKey: "school_id",
+    onDelete: "CASCADE",
+});
+
+Class.hasMany(ModuleClass, {
+    foreignKey: "class_id",
+    onDelete: "CASCADE",
+});
+
+Module.hasMany(Class, {
+    foreignKey: "school_id",
+    onDelete: "CASCADE",
+});
+
+School.hasMany(UserSchool, {
+    foreignKey: "school_id",
+    onDelete: "CASCADE",
+});
+
+UserSchool.belongsTo(UserModule, {
+    foreignKey: "user_id",
+    onDelete: "CASCADE",
+});
 
 module.exports = {
     User,
@@ -124,4 +149,4 @@ module.exports = {
     Class,
     UserModule,
     ModuleClass
-  };
+};

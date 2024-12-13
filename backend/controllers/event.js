@@ -236,49 +236,6 @@ const findEventsBySchoolByClass = async (req, res, next) => {
   }
 };
 
-const findIntervenantEvents = async (req, res, next) => {
-  const userId = req.params.intervenantId;
-
-  try {
-    const events = await Event.findAll({
-      attributes: ["id", "title", "description", "type", "start", "end"],
-      where: {
-        type: {
-          [Op.in]: [EventType.COURSE, EventType.EXAM, EventType.UNAVAILABILITY],
-        },
-      },
-      include: [
-        {
-          model: Module,
-          attributes: ["name"],
-        },
-        {
-          model: Class,
-          attributes: ["id", "name"],
-        },
-        {
-          model: Room,
-          attributes: ["id", "name"],
-        },
-        {
-          model: User,
-          attributes: ["id", "firstName", "lastName"],
-          where: {
-            id: userId,
-          },
-        },
-      ],
-    });
-    if (!events) {
-      res.status(404).json("Event not found");
-      return;
-    }
-    res.status(200).json(events);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
-
 const findIntervenantEventsBySchool = async (req, res, next) => {
   const schoolId = req.params.schoolId;
   const userId = req.params.intervenantId;
@@ -325,6 +282,49 @@ const findIntervenantEventsBySchool = async (req, res, next) => {
   }
 };
 
+const findIntervenantEvents = async (req, res, next) => {
+  const userId = req.params.intervenantId;
+
+  try {
+    const events = await Event.findAll({
+      attributes: ["id", "title", "description", "type", "start", "end"],
+      where: {
+        type: {
+          [Op.in]: [EventType.COURSE, EventType.EXAM, EventType.UNAVAILABILITY],
+        },
+      },
+      include: [
+        {
+          model: Module,
+          attributes: ["name"],
+        },
+        {
+          model: Class,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Room,
+          attributes: ["id", "name"],
+        },
+        {
+          model: User,
+          attributes: ["id", "firstName", "lastName"],
+          where: {
+            id: userId,
+          },
+        },
+      ],
+    });
+    if (!events) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 const findAvailabilityEventsBySchool = async (req, res, next) => {
   const schoolId = req.params.schoolId;
   try {
@@ -342,18 +342,28 @@ const findAvailabilityEventsBySchool = async (req, res, next) => {
           },
         },
         {
-          model: Class,
+          model: Room,
           attributes: ["id", "name"],
+        },
+        {
+          model: User,
+          attributes: ["id", "firstName", "lastName"],
         },
       ],
     });
+
     if (!events) {
-      res.status(404).json("Event not found");
-      return;
+      const error = new Error("Could not find events.");
+      error.statusCode = 404;
+      throw error;
     }
+
     res.status(200).json(events);
   } catch (err) {
-    res.status(500).json(err);
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
 };
 
@@ -387,6 +397,45 @@ const findAvailabilityEventsBySchoolByClass = async (req, res, next) => {
     }
     res.status(200).json(events);
   } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+const findEventsByUser = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+
+    if (!userId) {
+      const error = new Error("User ID is required.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const events = await Event.findAll({
+      attributes: ["id", "title", "description", "type", "start", "end"],
+      where: {
+        user_id: userId,
+      },
+      include: [
+        {
+          model: Module,
+          attributes: ["name"],
+        },
+        {
+          model: Class,
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+    if (!events) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    res.status(200).json(events);
+  } catch (err) {
     res.status(500).json(err);
   }
 };
@@ -403,5 +452,6 @@ module.exports = {
   findIntervenantEventsBySchool,
   findIntervenantEvents,
   findAvailabilityEventsBySchool,
-  findAvailabilityEventsBySchoolByClass
+  findAvailabilityEventsBySchoolByClass,
+  findEventsByUser
 };

@@ -15,4 +15,10 @@ router.patch("/:userId", userController.update);
 
 router.delete("/:userId", userController.delete);
 
+router.get("/:userId/schools", userController.findSchoolsByUser);
+
+router.get("/:userId/classes/", userController.findClasses);
+
+router.get("/:userId/classes/:schoolId", userController.findClassesBySchool);
+
 module.exports = router;
