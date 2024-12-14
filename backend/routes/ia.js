@@ -3,7 +3,7 @@ const iaController = require("../controllers/ia");
 
 const router = express.Router();
 
-router.get("/", iaController.getSchedulData);
+router.post("/", iaController.generateEvents);
 
 
 module.exports = router;
