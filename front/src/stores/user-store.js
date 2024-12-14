@@ -4,8 +4,9 @@ import { defineStore } from "pinia";
 export const useUserStore = defineStore("user", {
   state: () => ({
     isLoggedIn: false,
+    token: "",
+    user: "",
     schoolId: "",
-    userId: "",
   }),
 
   actions: {
@@ -26,8 +27,9 @@ export const useUserStore = defineStore("user", {
         );
         const userData = await response.json();
         this.isLoggedIn = true;
+        this.token = userData.token ?? "";
+        this.user = userData.user ?? "";
         this.schoolId = userData.schoolId ?? "";
-        this.userId = userData.token ?? "";
 
         if (!response.ok) {
           throw new Error("Something went wrong, request failed!");

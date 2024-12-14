@@ -111,15 +111,17 @@
 <script setup>
   import { ref, onMounted, watch, computed } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useUserStore } from '../stores/user-store'
 
   const router = useRouter()
+  const userStore = useUserStore()
 
   // Données utilisateur
-  const localUser = JSON.parse(localStorage.getItem('user'))
+  const localUser = userStore.user || JSON.parse(localStorage.getItem('user'))
   const user = ref({
-    firstName: localUser.firstName || 'John',
-    lastName: localUser.lastName || 'Doe',
-    role: localUser.roles
+    firstName: localUser?.firstName || 'John',
+    lastName: localUser?.lastName || 'Doe',
+    role: localUser?.user?.roles
       .map(role => role.replace('ROLE_', ''))
       .map(role => role.charAt(0) + role.slice(1).toLowerCase())
       .join(' - ') || 'Intervenant'
@@ -206,26 +208,6 @@
   }
 
   async function fetchEvent() {
-    // const token = localStorage.getItem('token')
-    // const userId = localUser.id
-
-    // try {
-    //   const eventsRes = await fetch(`http://localhost:3000/users/events/${userId}`, {
-    //     headers: {
-    //       'Authorization': `Bearer ${token}`
-    //     }
-    //   })
-
-    //   if (!eventsRes.ok) {
-    //     throw new Error('Erreur lors du chargement des événements')
-    //   }
-
-    //   const events = await eventsRes.json()
-
-    //   console.log('Événements:', events)
-    // } catch (error) {
-    //   console.error('Erreur:', error)
-    // }
   }
 
   // watch(selectedSchool, () => {

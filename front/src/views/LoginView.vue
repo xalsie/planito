@@ -57,21 +57,32 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from "../stores/user-store"; // Assurez-vous du bon chemin vers le store
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 
 const email = ref('')
 const password = ref('')
-
 const userStore = useUserStore();
-
 
 const login = async () => {
 	try {
 		await userStore.login(email.value, password.value);
-		if (userStore.schoolId) localStorage.setItem("schoolId", userStore.schoolId)
-		localStorage.setItem("isLoggedIn", userStore.isLoggedIn)
-		if (userStore.userId) localStorage.setItem("userId", userStore.userId)
 
+		if (userStore.schoolId || userStore.user.id) {
+			localStorage.setItem("isLoggedIn", userStore.isLoggedIn)
+		}
+
+		if (userStore.schoolId) {
+			localStorage.setItem("token", userStore.token)
+			localStorage.setItem("user", JSON.stringify(userStore.user))
+			router.push({name: "calendar"});
+		}
+		if (userStore.user.id) {
+			localStorage.setItem("token", userStore.token)
+			localStorage.setItem("user", JSON.stringify(userStore.user))
+			router.push({name: "intervenant-calendrier"});
+		}
 	} catch (error) {
 		console.error("Login failed:", error);
 	}

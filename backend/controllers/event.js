@@ -341,7 +341,7 @@ const findIntervenantEvents = async (req, res, next) => {
           model: User,
           attributes: ["id", "firstName", "lastName"],
           where: {
-            id: userId,
+            user_id: userId,
           },
         },
       ],
@@ -459,6 +459,10 @@ const findEventsByUser = async (req, res, next) => {
           model: Class,
           attributes: ["id", "name"],
         },
+        {
+          model: Room,
+          attributes: ["id", "name"],
+        }
       ],
     });
     if (!events) {

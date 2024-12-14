@@ -6,7 +6,6 @@
         <p class="mx-2">Salle : <span class="font-bold">{{ arg.event.extendedProps.room }}</span></p>
         <p class="mx-2">Classe : <span class="font-bold">{{ arg.event.extendedProps.className }}</span></p>
         <p class="mx-2">Module : <span class="font-bold">{{ arg.event.extendedProps.module }}</span></p>
-        <p class="mx-2">Intervenant : <span class="font-bold">{{ arg.event.extendedProps.user }}</span></p>
       </template>
     </FullCalendar>
   </div>
@@ -21,7 +20,11 @@
   import frLocale from '@fullcalendar/core/locales/fr'
   import '../assets/styles/calendar.css'
 
+  import { useUserStore } from "../stores/user-store"; // Assurez-vous du bon chemin vers le store
+
   const events = ref([])
+  const formattedEvents = ref([])
+  const userStore = useUserStore()
 
   const handleSelect = (selectInfo) => {
     const title = prompt('Entrez un titre pour l\'événement:')
@@ -90,7 +93,8 @@
 
   const fetchEventByUser = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}events/user/${localUser.id}`)
+      const userLocal = userStore.user || JSON.parse(localStorage.getItem('user'))
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}events/user/${userLocal.id}`)
       if (!response.ok) {
         throw new Error('Something went wrong, request failed!');
       }
@@ -104,6 +108,7 @@
   onMounted(async () => {
     try {
       events.value = await fetchEventByUser();
+      console.log('Événements chargés:', events.value);
       formattedEvents.value = events.value.map(event => ({
         title: event.title,
         start: event.start,
@@ -111,10 +116,9 @@
         extendedProps: {
           description: event.description,
           type: event.type,
-          module: event.module.name,
-          className: event.class.name,
-          room: event.room.name,
-          user: `${event.user.firstName} ${event.user.lastName}`,
+          module: event?.module?.name || 'Non défini',
+          className: event?.class?.name || 'Non défini',
+          room: event?.room?.name || 'Non défini',
         },
       }));
     } catch (error) {

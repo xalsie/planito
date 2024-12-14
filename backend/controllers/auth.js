@@ -19,21 +19,22 @@ exports.login = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
+
+    user.password = undefined;
+
     if (user.roles.includes("ROLE_STAFF")) {
       const userSchool = await UserSchool.findOne({
         where: { user_id: user.id },
       });
       return res.status(200).json({
         token: user.id,
-        name: `${user.firstName} ${user.lastName}`,
-        roles: user.roles,
+        user: user,
         schoolId: userSchool.school_id,
       });
     }
     return res.status(200).json({
       token: user.id,
-      name: `${user.firstName} ${user.lastName}`,
-      roles: user.roles,
+      user: user
     });
   } catch (err) {
     if (!err.statusCode) {

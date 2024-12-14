@@ -138,6 +138,16 @@ UserSchool.belongsTo(UserModule, {
     onDelete: "CASCADE",
 });
 
+UserSchool.belongsTo(Class, {
+    foreignKey: "school_id",
+    onDelete: "CASCADE",
+});
+
+Class.hasMany(UserSchool, {
+    foreignKey: "school_id",
+    onDelete: "CASCADE",
+});
+
 module.exports = {
     User,
     UserSchool,

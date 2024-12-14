@@ -1,7 +1,7 @@
 const Module = require("../models/module");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const UserSchool = require("../models/userSchool");
 const UserModule = require("../models/userModule");
 const ModuleClass = require("../models/moduleClass");
