@@ -125,7 +125,6 @@ import { useUserStore } from "../stores/user-store";
 
 const userStore = useUserStore();
 const schoolId = userStore.schoolId || localStorage.getItem("schoolId");
-console.log("schoolId:", schoolId);
 const intervenants = ref([]);
 const selectedIntervenant = ref({});
 const selectedModule = ref({});
@@ -135,11 +134,31 @@ watch(selectedIntervenant, () => {
   selectedModule.value = selectedIntervenant.value.modules;
 });
 
+const deletePref = async (id) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}userModules/${id}`,
+      {
+        method: "PUT",
+        headers: {
+        "Content-Type": "application/json",
+      },
+        body: JSON.stringify({
+          settings: "",
+        }),
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Something went wrong, request failed!");
+    }
+    router.go();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const createPref = async () => {
   try {
-    console.log("selectedIntervenant:", typeof(selectedIntervenant.value.id), selectedIntervenant.value.id);
-    console.log("selectedModule:", typeof(selectedModule.value.id), selectedModule.value.id);
-    console.log("preferences:", typeof(preferences.value), preferences.value);
     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}userModules`, {
       method: "POST",
       headers: {
@@ -147,7 +166,7 @@ const createPref = async () => {
       },
       body: JSON.stringify({
         userId: selectedIntervenant.value.id,
-        moduleId: selectedModule.value.id,
+        moduleId: selectedModule.value.moduleId,
         settings: preferences.value,
       }),
     });
@@ -209,11 +228,9 @@ onMounted(async () => {
         module.preferences = module.preferences
           .split(",")
           .map((preference) => preference.trim());
-          console.log("avec contenu et virgule:", module.preferences);
           return module;
     });
     return intervenant;
   });
-  console.log("intervenants:", intervenants);
 });
 </script>
