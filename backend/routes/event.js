@@ -8,6 +8,7 @@ router.post("/", eventController.create);
 
 router.post("/availability", eventController.createAvailability);
 router.get("/availabilities/:classId?", eventController.getAvailabilities);
+
 router.get(
   "/availability/school/:schoolId",
   eventController.findAvailabilityEventsBySchool
@@ -34,7 +35,5 @@ router.get("/:eventId", eventController.findById);
 router.patch("/:eventId", eventController.updateById);
 router.delete("/:eventId", eventController.deleteById);
 router.post("/import", eventController.importIcalFromURL);
-
-router.get("/user/:userId", eventController.findEventsByUser);
 
 module.exports = router;

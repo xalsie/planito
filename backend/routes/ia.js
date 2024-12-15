@@ -5,5 +5,4 @@ const router = express.Router();
 
 router.post("/", iaController.generateEvents);
 
-
 module.exports = router;

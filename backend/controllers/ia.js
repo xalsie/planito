@@ -17,7 +17,7 @@ async function getSchedulData(schoolId, classId, startDate) {
     });
 
     if (!school) {
-      return res.status(404).json({ message: "School not found" });
+      throw new Error("School not found");
     }
 
     // 2. Fetch class availability
@@ -35,9 +35,7 @@ async function getSchedulData(schoolId, classId, startDate) {
       ],
     });
     if (!classData) {
-      return res
-        .status(404)
-        .json({ message: "Class not found or no availability found" });
+      throw new Error("Class not found");
     }
 
     const classAvailability = classData.events.map((event) => ({

@@ -25,16 +25,25 @@
             </path>
         </svg>
 
-        <!-- Titre -->
         <h2 class="text-2xl font-semibold leading-tight tracking-wide">{{ title }}</h2>
 
-        <!-- Description -->
         <p class="flex-1 text-center dark:text-gray-600">{{ description }}</p>
 
-        <!-- Champs dynamiques -->
         <div v-for="(placeholder, index) in placeholders" :key="index" class="w-full">
-            <input v-model="inputs[index]" type="text"
+            <input v-if="placeholder !== 'Date' && placeholder !== 'Select'" v-model="inputs[index]" type="text"
                 class="border-solid border-slate-400 border p-2 rounded-lg w-full" :placeholder="placeholder">
+
+            <input v-else-if="placeholder === 'Date'" v-model="inputs[index]" type="date"
+                :min="new Date().toISOString().split('T')[0]"
+                class="border-solid border-slate-400 border p-2 rounded-lg w-full">
+
+            <select v-else-if="placeholder === 'Select'" v-model="inputs[index]"
+                class="border-solid border-slate-400 border p-2 rounded-lg w-full">
+                <option value="">--Choisissez une classe--</option>
+                <option v-for="classe in classes" :key="classe.id" :value="classe.id">
+                    {{ classe.name }}
+                </option>
+            </select>
         </div>
 
         <!-- Bouton d'action -->
@@ -65,6 +74,10 @@ defineProps({
     onClick: {
         type: Function,
         required: true,
+    },
+    classes: {
+        type: Array,
+        required: false,
     },
 });
 

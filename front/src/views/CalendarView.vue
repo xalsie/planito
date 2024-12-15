@@ -18,6 +18,10 @@ import interactionPlugin from '@fullcalendar/interaction';
 import frLocale from '@fullcalendar/core/locales/fr';
 import '../assets/styles/calendar.css';
 import { onMounted, ref, watch } from 'vue';
+import { useUserStore } from '../stores/user-store';
+
+const userStore = useUserStore();
+const schoolId = userStore.schoolId || localStorage.getItem("schoolId");
 
 
 const events = ref([]);
@@ -25,7 +29,7 @@ const formattedEvents = ref([]);
 
 const fetchCoursesBySchool = async () => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}events/school/95c39d6e-60a2-4309-9da9-9117e44d2fc4`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}events/school/${schoolId}`);
         if (!response.ok) {
             throw new Error('Something went wrong, request failed!');
         }
@@ -91,10 +95,11 @@ onMounted(async () => {
                 type: event.type,
                 module: event.module.name,
                 className: event.class.name,
-                room: event.room.name,
+                room: event.room?.name,
                 user: `${event.user.firstName} ${event.user.lastName}`,
             },
         }));
+        console.log('Evénements chargés :', formattedEvents.value);
     } catch (error) {
         console.error('Erreur lors du chargement des événements :', error);
     }

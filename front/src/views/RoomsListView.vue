@@ -28,6 +28,9 @@ import { onMounted, ref } from 'vue';
 import Modal from '../components/Modal.vue';
 import router from '../router';
 import { useUserStore } from '../stores/user-store';
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 const userStore = useUserStore();
 const schoolId = userStore.schoolId || localStorage.getItem("schoolId");
@@ -58,7 +61,7 @@ const fetchRooms = async () => {
 
 const createRoom = async (inputs) => {
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}rooms`, {
+        await fetch(`${import.meta.env.VITE_BACKEND_URL}rooms`, {
             method: 'POST',
             body: JSON.stringify({ name: inputs[0], schoolId: schoolId }),
             headers: {
@@ -66,11 +69,12 @@ const createRoom = async (inputs) => {
             },
         });
 
-        if (!response.ok) {
-            throw new Error('Something went wrong, request failed!');
-        }
-        router.go();
+        rows.value = await fetchRooms();
+
         openModal();
+        toast.success(`La salle ${inputs[0]} a bien été crée.`, {
+            timeout: 2000
+        });
     } catch (err) {
         throw new Error(err)
     }

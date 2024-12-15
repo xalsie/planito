@@ -2,13 +2,14 @@ const Module = require("../models/module");
 
 exports.create = async (req, res, next) => {
   try {
-    const { name, volHours, nbClasses, nbCc, volExams } = req.body;
+    const { name, volHours, nbClasses, nbCc, volExams, schoolId } = req.body;
     await Module.create({
       name: name,
       volHours: volHours,
       nbClasses: nbClasses,
       nbCc: nbCc,
       volExams: volExams,
+      school_id: schoolId,
     });
     res.sendStatus(201);
   } catch (err) {
@@ -46,7 +47,7 @@ exports.findBySchool = async (req, res, next) => {
     }
     next(err);
   }
-}
+};
 
 exports.findById = async (req, res, next) => {
   try {
