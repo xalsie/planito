@@ -12,8 +12,8 @@
             :placeholders="['Nom du module', 'Volume d\'heures', 'Nombre de CC', 'Volume d\'examens']"
             saveTitle="Enregistrer" :onClick="createModule" />
     </div>
-    <Table v-if="!isModalCreateOpen" title="Liste des modules" :columns="columns" :rows="rows"
-        :onOpenModalDelete="openModalDelete" :onEdit="() => true" />
+    <Table v-if="!isOpen" title="Liste des modules" :columns="columns" :rows="rows" :onOpenModalDelete="openModalDelete"
+        :onEdit="() => true" />
     <DeleteModal v-if="isModalDelete" :onConfirm="deleteModule" :onCancel="() => isModalDelete = false" />
 
 </template>
@@ -26,6 +26,9 @@ import { onMounted, ref } from 'vue';
 import Modal from '../components/Modal.vue';
 import router from '../router';
 import { useUserStore } from '../stores/user-store';
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 const userStore = useUserStore();
 const schoolId = userStore.schoolId || localStorage.getItem("schoolId");
@@ -54,20 +57,22 @@ const fetchModules = async () => {
 }
 
 const createModule = async (inputs) => {
+
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}modules`, {
+        await fetch(`${import.meta.env.VITE_BACKEND_URL}modules`, {
             method: 'POST',
-            body: JSON.stringify({ name: inputs[0] }),
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify({ name: inputs[0], volHours: inputs[1], nbCc: inputs[2], volExams: inputs[3], schoolId: schoolId }),
         });
 
-        if (!response.ok) {
-            throw new Error('Something went wrong, request failed!');
-        }
-        router.go();
+        rows.value = await fetchModules();
         openModal();
+        toast.success(`Le module ${inputs[0]} a bien été crée.`, {
+            timeout: 2000
+        });
+
     } catch (err) {
         console.log(err);
     }
