@@ -107,15 +107,14 @@
               <td class="px-3 py-2">
                 <p>{{ intervenant.firstname }} {{ intervenant.lastname }}</p>
               </td>
-              <tr v-for="module in intervenant.modules" :key="module">
-                <td class="px-3 py-2">
-                  <p>{{ module.name }}</p>
-                  <p>{{ module.preferences }}</p>
-                </td>
-                <td class="px-3 py-2">
-                  <p v-for="preference in module.preferences" :key="preference">{{ preference }}</p>
-                </td>
-              </tr>
+              <td class="px-3 py-2">
+                <p v-for="(module, index) in intervenant.modules" :key="module.id">{{ module.name }}</p>
+              </td>
+              <td class="px-3 py-2">
+                <div v-for="module in intervenant.modules">
+                <span v-for="(preference, index) in module.preferences" :key="preference">{{ preference}}, </span>
+                </div>
+              </td>
               <td class="px-3 py-2"></td>
               <td class="px-3 py-2">
                 <button
@@ -198,30 +197,16 @@ onMounted(async () => {
   intervenants.value = await fetchGetData(`users/intervenants/${schoolId}`);
 
   intervenants.value = intervenants.value.map((intervenant) => {
-    console.log("intervenant:", intervenant.firstname, intervenant.lastname,":",intervenant.id, intervenant.modules);
     intervenant.modules = intervenant.modules.map((module) => {
-      console.log("module:", module.name, ":", module.preferences);
       if (!module.preferences) {
         module.preferences = [];
-        console.log("changedModule:", module.name, ":", module.preferences);
         return module;
       }
-      if (!module.preferences.includes(",")) {
-        const prefs = [module.preferences];
-        module.preferences = prefs.map((preference) => preference.trim());
-        console.log("prefs sans virgule:", prefs);
-        console.log("changedModule:", module);
-        return module;
-      }
-      console.log("avec contenu et virgule:", module.preferences);
-      const prefs = module.preferences.split(",");
-      // met dans le tableau prefs les éléments de module.preferences séparés par une virgule puis les trim et les met dans module.preferences
-      // prefs.push(module.preferences.split(","));
-      // module.preferences = prefs.map((preference) => preference.trim());
-
-      console.log("prefs avec virgule:", prefs);
-      console.log("changedModule:", module);
-      return module;
+        module.preferences = module.preferences
+          .split(",")
+          .map((preference) => preference.trim());
+          console.log("avec contenu et virgule:", module.preferences);
+          return module;
     });
     return intervenant;
   });
