@@ -12,8 +12,8 @@ const School = require("../models/school");
 const UserSchool = require("../models/userSchool");
 
 const find = async (req, res, next) => {
-    console.log("find");
-    
+  console.log("find");
+
   try {
     const events = await Event.findAll();
     if (!events) {
@@ -187,21 +187,12 @@ const importIcalFromURL = async (req, res, next) => {
       for (let k in data) {
         if (data.hasOwnProperty(k)) {
           const ev = data[k];
-          console.log("Event: " + ev.summary);
 
-          if (
-            ev.summary === "osuvghiliy" ||
-            ev.summary === "izefubd" ||
-            ev.summary === "okokok"
-          ) {
-            console.log("Event1: " + ev.type);
-          }
           if (ev.type === "VEVENT") {
             const startDate = new Date(ev.start);
             const endDate = new Date(ev.end);
 
             if (startDate >= currentDate && startDate <= nextYear) {
-              console.log("Event2: " + ev.summary);
               const event = await Event.create({
                 title: ev.summary || "No title",
                 description: ev.description || "No description",
@@ -473,7 +464,7 @@ const findEventsByUser = async (req, res, next) => {
         {
           model: Room,
           attributes: ["id", "name"],
-        }
+        },
       ],
     });
 

@@ -5,32 +5,44 @@ exports.create = async (req, res, next) => {
     if (!req.body || !req.body.userId || !req.body.settings) {
       const error = new Error("Invalid data");
       error.statusCode = 400;
-      next(error);
+      throw error;
     }
 
     const { moduleId, userId, settings } = req.body;
+    const userModule = await UserModule.findOne({
+      where: { module_id: moduleId, user_id: userId },
+    });
+    if (userModule) {
+      const currentSettings = userModule.settings;
+      if (!currentSettings) {
+        userModule.settings = settings;
+        await userModule.save();
 
-    const [userModule, created] = await UserModule.findOrCreate({
-      where: { module_id: moduleId, user_id: userId, settings: settings },
-      defaults: {
+        res.status(200).json(userModule);
+        return;
+      } else {
+        userModule.settings = currentSettings.concat(",", settings);
+
+        await userModule.save();
+
+        res.status(200).json(userModule);
+        return;
+      }
+    } else {
+      const newUserModule = await UserModule.create({
         module_id: moduleId,
         user_id: userId,
         settings: settings,
-      },
-    });
+      });
 
-    if (created) {
-      res.status(201).json(userModule).end();
+      res.status(201).json(newUserModule).end();
       return;
     }
-    const error = new Error("UserModule already exists");
-    error.statusCode = 409;
-    next(error);
   } catch (err) {
-    console.error("Error in create UserModule:", err.message);
-    const error = new Error("An error occurred while processing the request.");
-    error.statusCode = 500;
-    next(error);
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
 };
 
@@ -59,34 +71,36 @@ exports.getAllByUserId = async (req, res, next) => {
 };
 
 exports.update = async (req, res, next) => {
-  if (!req.body || !req.body.settings || req.params || !req.params.userId) {
+  if (!req.body || !req.params || !req.params.id) {
     const error = new Error("Invalid data");
     error.statusCode = 400;
-    next(error);
+    throw error;
   }
 
-  const userId = req.params.userId;
-  const settings = req.body;
+  const id = req.params.id;
+  console.log("id");
+  const settings = req.body.settings ? req.body.settings : "";
+  console.log("settings", settings);
   try {
-    const userModule = await UserModule.findByPk(userId);
+    const userModule = await UserModule.findByPk(id);
     if (!userModule) {
       const error = new Error("UserModule not found");
       error.statusCode = 404;
-      next(error);
+      throw error;
     }
-    const newUserModule = await User.update(settings, {
+    const newUserModule = await userModule.update(settings, {
       where: {
-        id: userId,
+        id: id,
       },
       returning: true,
       plain: true,
     });
     res.sendStatus(200).json(newUserModule).end();
   } catch (err) {
-    console.error("Error in update UserModule:", err.message);
-    const error = new Error("An error occurred while processing the request.");
-    error.statusCode = 500;
-    next(error);
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
 };
 
