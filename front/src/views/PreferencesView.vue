@@ -19,7 +19,7 @@
             <select
               id="Intervenant"
               v-model="selectedIntervenant"
-              class="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-50 focus:dark:ring-violet-600 dark:border-gray-300"
+              class="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-800 focus:dark:ring-violet-600 dark:border-gray-300"
             >
             <option value="">Choisissez un intervenant</option>
               <option
@@ -44,7 +44,7 @@
             <select
               id="modules"
               v-model="selectedModule"
-              class="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-50 focus:dark:ring-violet-600 dark:border-gray-300"
+              class="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-800 focus:dark:ring-violet-600 dark:border-gray-300"
             ><option value="">Choisissez un module</option>
               <option
                 v-for="module in selectedIntervenant.modules"
@@ -60,7 +60,7 @@
               id="pref"
               placeholder="A aqua poney tous les jeudis, pas le samedi"
               v-model="preferences"
-              class="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-50 focus:dark:ring-violet-600 dark:border-gray-300"
+              class="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-800 focus:dark:ring-violet-600 dark:border-gray-300"
             ></textarea>
           </div>
           <div class="col-span-full">
@@ -108,11 +108,11 @@
                 <p>{{ intervenant.firstname }} {{ intervenant.lastname }}</p>
               </td>
               <td class="px-3 py-2">
-                <p v-for="(module, index) in intervenant.modules" :key="module.id">{{ module.name }}</p>
+                <p v-for="(module, index) in intervenant.modules" :key="index">{{ module.name }}</p>
               </td>
               <td class="px-3 py-2">
                 <div v-for="module in intervenant.modules">
-                <span v-for="(preference, index) in module.preferences" :key="preference">{{ preference}}, </span>
+                <span v-for="(preference, index) in module.preferences" :key="index">{{ preference }}, </span>
                 </div>
               </td>
               <td class="px-3 py-2"></td>
