@@ -53,6 +53,21 @@ Event.belongsTo(Class, {
     onDelete: "CASCADE",
 });
 
+// Event.belongsTo(UserSchool, {
+//     foreignKey: "user_id",
+//     onDelete: "CASCADE",
+// });
+
+// UserSchool.hasMany(Event, {
+//     foreignKey: "user_id",
+//     onDelete: "CASCADE",
+// });
+
+// UserSchool.belongsTo(School, {
+//     foreignKey: "school_id",
+//     onDelete: "CASCADE",
+// });
+
 User.hasMany(UserModule, {
     foreignKey: "user_id",
     onDelete: "CASCADE",

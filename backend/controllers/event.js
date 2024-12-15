@@ -8,6 +8,8 @@ const Room = require("../models/room");
 const Material = require("../models/material");
 const User = require("../models/user");
 const { fi } = require("@faker-js/faker");
+const School = require("../models/school");
+const UserSchool = require("../models/userSchool");
 
 const find = async (req, res, next) => {
   try {
@@ -37,7 +39,7 @@ const findById = async (req, res, next) => {
 };
 
 const create = async (req, res, next) => {
-  const { title, description, type, start, end } = req.body;
+  const { title, description, type, start, end, user_id } = req.body;
   try {
     const event = await Event.create({
       title,
@@ -45,6 +47,7 @@ const create = async (req, res, next) => {
       type,
       start,
       end,
+      user_id,
     });
     res.status(201).json(event);
   } catch (err) {
@@ -92,13 +95,13 @@ const updateById = async (req, res, next) => {
       res.status(404).json("Event not found");
       return;
     }
-    event.title = title;
-    event.description = description;
-    event.type = type;
-    event.start = start;
-    event.end = end;
+    event.title = title || event.title;
+    event.description = description || event.description;
+    event.type = type || event.type;
+    event.start = start || event.start;
+    event.end = end || event.end;
     await event.save();
-    res.status(200).json(event);
+    res.status(204).end();
   } catch (err) {
     res.status(500).json(err);
   }
@@ -113,7 +116,7 @@ const deleteById = async (req, res, next) => {
       return;
     }
     await event.destroy();
-    res.status(204).json();
+    res.status(202).end();
   } catch (err) {
     res.status(500).json(err);
   }
@@ -453,11 +456,17 @@ const findEventsByUser = async (req, res, next) => {
       include: [
         {
           model: Module,
-          attributes: ["name"],
+          attributes: ["id", "name"],
         },
         {
           model: Class,
           attributes: ["id", "name"],
+          include: [
+            {
+              model: School,
+              attributes: ["id", "name"],
+            },
+          ],
         },
         {
           model: Room,
@@ -465,6 +474,7 @@ const findEventsByUser = async (req, res, next) => {
         }
       ],
     });
+
     if (!events) {
       res.status(404).json("Event not found");
       return;

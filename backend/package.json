@@ -7,7 +7,6 @@
     "dev": "node --watch index.js",
     "migrate": "node migration.js",
     "fixtures": "node fixtures.js"
-
   },
   "author": "",
   "license": "ISC",

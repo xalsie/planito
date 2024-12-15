@@ -1,5 +1,20 @@
 <template>
   <div class="bg-white p-4 rounded-lg shadow">
+    <!-- filtre -->
+    <div class="flex justify-start items-center mb-4">
+      <select class="px-4 py-2 mr-2 border border-gray-300 rounded-md" v-model="filteredEventsSchool">
+        <option value="all" selected>Toutes les écoles</option>
+        <option v-for="school in schools" :key="school.id" :value="school.id">{{ school.name }}</option>
+      </select>
+      <select class="px-4 py-2 mr-2 border border-gray-300 rounded-md" v-model="filteredEventsClass">
+        <option value="all">Toutes les classes</option>
+        <option v-for="classe in classes" :key="classe.id" :value="classe.id">{{ classe.name }}</option>
+      </select>
+      <select class="px-4 py-2 border border-gray-300 rounded-md" v-model="filteredEventsModule">
+        <option value="all">Tous les modules</option>
+        <option v-for="module in modules" :key="module.id" :value="module.id">{{ module.name }}</option>
+      </select>
+    </div>
     <FullCalendar :options="calendarOptions">
       <template v-slot:eventContent="arg">
         <p class="text-center mb-2">{{ arg.event.title }}</p>
@@ -26,31 +41,13 @@
   const formattedEvents = ref([])
   const userStore = useUserStore()
 
-  const handleSelect = (selectInfo) => {
-    const title = prompt('Entrez un titre pour l\'événement:')
-    if (title) {
-      const calendarApi = selectInfo.view.calendar
-      calendarApi.unselect()
+  const schools = ref([])
+  const classes = ref([])
+  const modules = ref([])
 
-      calendarApi.addEvent({
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay
-      })
-    }
-  }
-
-  const handleEventClick = (clickInfo) => {
-    if (confirm('Voulez-vous supprimer cet événement ?')) {
-      clickInfo.event.remove()
-    }
-  }
-
-  const handleEventChange = (changeInfo) => {
-    // Ici vous pouvez ajouter la logique pour sauvegarder les changements
-    console.log('Événement modifié:', changeInfo.event.toPlainObject())
-  }
+  const filteredEventsSchool = ref('all')
+  const filteredEventsClass = ref('all')
+  const filteredEventsModule = ref('all')
 
   const calendarOptions = ref({
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -68,8 +65,6 @@
     weekends: true,
     events: [],
     height: 'auto',
-    slotMinTime: "8:00:00",
-    slotMaxTime: "21:00:00",
     allDaySlot: false,
     eventMinHeight: 'auto',
     buttonText: {
@@ -79,16 +74,16 @@
       day: 'Jour'
     },
     views: {
-      timeGrid: {
-        dayMaxEventRows: 4,
-        slotDuration: '01:00:00',
-        slotLabelFormat: {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
+        timeGrid: {
+            dayMaxEventRows: 4,
+            slotDuration: '01:00:00',
+            slotLabelFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }
         }
-      }
-    }
+    },
   })
 
   const fetchEventByUser = async () => {
@@ -108,7 +103,20 @@
   onMounted(async () => {
     try {
       events.value = await fetchEventByUser();
-      console.log('Événements chargés:', events.value);
+
+      events.value.map(event => {
+        if (event.class && !classes.value.find(classe => classe.id === event.class.id)) {
+          classes.value.push(event.class)
+        }
+        if (event.module && !modules.value.find(module => module.id === event.module.id)) {
+          modules.value.push(event.module)
+        }
+        if (event.class?.school && !schools.value.find(school => school.id === event.class.school.id)) {
+          schools.value.push(event.class.school)
+          console.log(event.class.school)
+        }
+      })
+
       formattedEvents.value = events.value.map(event => ({
         title: event.title,
         start: event.start,
@@ -132,9 +140,28 @@
       events: newEvents
     }
   });
+
+  watch([filteredEventsSchool, filteredEventsClass, filteredEventsModule], ([school, classe, module]) => {
+    formattedEvents.value = events.value
+      .filter(event => school === 'all' || event?.class?.school.id === school)
+      .filter(event => classe === 'all' || event?.class?.id === classe)
+      .filter(event => module === 'all' || event?.module?.id === module)
+      .map(event => ({
+        title: event.title,
+        start: event.start,
+        end: event.end,
+        extendedProps: {
+          description: event.description,
+          type: event.type,
+          module: event?.module?.name || 'Non défini',
+          className: event?.class?.name || 'Non défini',
+          room: event?.room?.name || 'Non défini',
+        },
+      }));
+  });
   </script>
 
-  <style>
+<style>
   .fc-timegrid-slot {
     height: 3em !important;
   }
