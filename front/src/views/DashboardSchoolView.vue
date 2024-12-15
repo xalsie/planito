@@ -48,6 +48,11 @@
 <script setup>
 import { ref } from 'vue';
 import router from '../router';
+import { useUserStore } from '../stores/user-store';
+
+const userStore = useUserStore();
+
+const school = userStore.school || JSON.parse(localStorage.getItem('school'));
 
 const handleLogout = () => {
     localStorage.removeItem('token')
@@ -57,7 +62,7 @@ const handleLogout = () => {
 
 
 const user = ref({
-    name: 'École XYZ',
+    name: school.name,
     role: 'Administration'
 })
 

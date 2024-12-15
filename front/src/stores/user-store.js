@@ -7,6 +7,7 @@ export const useUserStore = defineStore("user", {
     token: "",
     user: "",
     schoolId: "",
+    school: "",
   }),
 
   actions: {
@@ -29,6 +30,7 @@ export const useUserStore = defineStore("user", {
         this.isLoggedIn = true;
         this.token = userData.token ?? "";
         this.user = userData.user ?? "";
+        this.school = userData.school ?? "";
         this.schoolId = userData.schoolId ?? "";
 
         if (!response.ok) {

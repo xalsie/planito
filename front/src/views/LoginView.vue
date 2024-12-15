@@ -72,10 +72,10 @@ const login = async () => {
 		if (userStore.schoolId || userStore.user.id) {
 			localStorage.setItem("isLoggedIn", userStore.isLoggedIn)
 		}
-
 		if (userStore.schoolId) {
 			localStorage.setItem("schoolId", userStore.schoolId)
 			localStorage.setItem("token", userStore.token)
+			localStorage.setItem("school", userStore.school)
 
 			localStorage.setItem("user", JSON.stringify(userStore.user))
 			router.push({ name: "calendar" });

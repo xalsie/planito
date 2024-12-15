@@ -28,6 +28,7 @@ exports.login = async (req, res, next) => {
       });
       return res.status(200).json({
         token: user.id,
+        school: school,
         schoolId: school.id,
       });
     }
