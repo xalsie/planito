@@ -320,7 +320,7 @@ const handleImportURL = async () => {
           console.error("Erreur:", error);
         });
       console.log("fetch done");
-      // closeImportModal();
+      closeImportModal();
     } else {
       console.log("URL invalide");
     }
