@@ -13,7 +13,7 @@ const UserModule = sequelize.define(
       primaryKey: true,
     },
     settings: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: DataTypes.STRING,
       allowNull: true,
     },
     user_id: {
@@ -29,6 +29,7 @@ const UserModule = sequelize.define(
     hooks: {
       beforeValidate: (userModule, options) => {
         userModule.id = uuidv4();
+        userModule.updatedAt = new Date();
       },
     },
   }

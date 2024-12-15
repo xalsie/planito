@@ -119,7 +119,7 @@ exports.findIntervenantBySchool = async (req, res, next) => {
                   attributes: ["name"],
                 },
               ],
-              attributes: ["module_id"],
+              attributes: ["module_id", "settings"],
             },
             {
               model: ModuleClass,
@@ -140,17 +140,14 @@ exports.findIntervenantBySchool = async (req, res, next) => {
       const user = userSchool.user;
 
       const roles = user.roles.join(", ");
-      const modules = Array.from(
-        new Set(
-          user.userModules?.map((userModule) => userModule.module.name) || []
-        )
-      ).join(", ");
-
-      const preferences = Array.from(
-        new Set(
-          user.userModules?.map((userModule) => userModule.settings) || []
-        )
-      ).join(", ");
+      const modules = user.userModules?.map((userModule) => {
+        return {
+          id: userModule.module_id,
+          name: userModule.module.name,
+          preferences: userModule.settings || [],
+        };
+      });
+      console.log("modules:", modules);
 
       const classes = Array.from(
         new Set(
@@ -164,7 +161,6 @@ exports.findIntervenantBySchool = async (req, res, next) => {
         email: user.email,
         roles: roles,
         modules: modules,
-        preferences: preferences,
         classes: classes,
       };
     });

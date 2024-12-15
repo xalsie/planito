@@ -5,35 +5,44 @@ exports.create = async (req, res, next) => {
     if (!req.body || !req.body.userId || !req.body.settings) {
       const error = new Error("Invalid data");
       error.statusCode = 400;
-      next(error);
+      throw error;
     }
 
     const { moduleId, userId, settings } = req.body;
+    const userModule = await UserModule.findOne({
+      where: { module_id: moduleId, user_id: userId },
+    });
+    if (userModule) {
+      const currentSettings = userModule.settings;
+      if (!currentSettings) {
+        userModule.settings = settings;
+        await userModule.save();
 
-    console.log("userId", userId);
+        res.status(200).json(userModule);
+        return;
+      } else {
+        userModule.settings = currentSettings.concat(",", settings);
 
-    const [userModule, created] = await UserModule.findOrCreate({
-      where: { module_id: moduleId, user_id: userId, settings: settings },
-      defaults: {
+        await userModule.save();
+
+        res.status(200).json(userModule);
+        return;
+      }
+    } else {
+      const newUserModule = await UserModule.create({
         module_id: moduleId,
         user_id: userId,
         settings: settings,
-      },
-    });
-    console.log("userModule", userModule);
+      });
 
-    if (created) {
-      res.status(201).json(userModule).end();
+      res.status(201).json(newUserModule).end();
       return;
     }
-    const error = new Error("UserModule already exists");
-    error.statusCode = 409;
-    next(error);
   } catch (err) {
-    console.error("Error in create UserModule:", err.message);
-    const error = new Error("An error occurred while processing the request.");
-    error.statusCode = 500;
-    next(error);
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
   }
 };
 

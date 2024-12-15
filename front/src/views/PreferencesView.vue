@@ -3,6 +3,7 @@
     <form
       novalidate=""
       action=""
+      @submit.prevent="createPref"
       class="container flex flex-col mx-auto space-y-12"
     >
       <fieldset
@@ -15,12 +16,19 @@
         <div class="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
           <div class="col-span-full sm:col-span-3">
             <label for="Intervenant" class="text-sm">Intervenant</label>
-            <input
+            <select
               id="Intervenant"
-              type="text"
-              placeholder="Intervenant"
+              v-model="selectedIntervenant"
               class="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-50 focus:dark:ring-violet-600 dark:border-gray-300"
-            />
+            >
+            <option value="">Choisissez un intervenant</option>
+              <option
+                v-for="intervenant in intervenants"
+                :key="intervenant.id"
+                :value="intervenant"
+              >
+                {{ intervenant.firstname }} {{ intervenant.lastname }}
+            </option></select>
             <div
               data-lastpass-icon-root=""
               style="
@@ -32,21 +40,37 @@
             ></div>
           </div>
           <div class="col-span-full">
+            <label for="modules" class="text-sm">Modules</label>
+            <select
+              id="modules"
+              v-model="selectedModule"
+              class="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-50 focus:dark:ring-violet-600 dark:border-gray-300"
+            ><option value="">Choisissez un module</option>
+              <option
+                v-for="module in selectedIntervenant.modules"
+                :key="module.id"
+                :value="module"
+              >
+                {{ module.name }}
+            </option></select>
+          </div>
+          <div class="col-span-full">
             <label for="pref" class="text-sm">Préférence à entrer</label>
             <textarea
               id="pref"
-              placeholder="A aqua poney tous les jeudis"
+              placeholder="A aqua poney tous les jeudis, pas le samedi"
+              v-model="preferences"
               class="w-full rounded-md focus:ring focus:ring-opacity-75 dark:text-gray-50 focus:dark:ring-violet-600 dark:border-gray-300"
             ></textarea>
           </div>
           <div class="col-span-full">
             <div class="flex items-center space-x-2">
-              <button
-                type="button"
-                class="px-4 py-2 border rounded-md dark:border-gray-800"
+              <input
+                type="submit"
+                value="Créer"
+                class="px-4 py-2 border rounded-md dark:border-gray-800 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-800 dark:hover:text-white"
               >
-                Enregistrer
-              </button>
+              </input>
             </div>
           </div>
         </div>
@@ -81,207 +105,17 @@
           <tbody class="border-b dark:bg-gray-50 dark:border-gray-300">
             <tr v-for="intervenant in intervenants" :key="intervenant.id">
               <td class="px-3 py-2">
-                <p>
-                  {{ (intervenant.firstname, intervenant.lastname) }}
-                </p>
+                <p>{{ intervenant.firstname }} {{ intervenant.lastname }}</p>
               </td>
-              <td class="px-3 py-2">
-                <span>{{ intervenant.modules }}</span>
-              </td>
-              <td class="px-3 py-2">
-                <p>{{ intervenant.preferences }}</p>
-              </td>
-              <td class="px-3 py-2"></td>
-              <td class="px-3 py-2"></td>
-              <td class="px-3 py-2">
-                <button
-                  type="button"
-                  title="Open details"
-                  class="p-1 rounded-full dark:text-gray-400 hover:dark:bg-gray-300 focus:dark:bg-gray-300"
-                >
-                  <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current">
-                    <path
-                      d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z"
-                    ></path>
-                  </svg>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-
-          <!-- <tr>
-              <td class="px-3 py-2">
-                <p>Dwight Adams</p>
-              </td>
-              <td class="px-3 py-2">
-                <span>UI Designer</span>
-              </td>
-              <td class="px-3 py-2">
-                <p>A aqua poney les lundis</p>
-                <p>A aqua poney les mardis</p>
-                <p>A aqua poney les mercredis</p>
-                <p>A aqua poney les jeudis</p>
-                <p>A aqua poney les vendredis</p>
-              </td>
-              <td></td>
-              <td></td>
-              <td class="px-3 py-2">
-                <button
-                  type="button"
-                  title="Open details"
-                  class="p-1 rounded-full dark:text-gray-400 hover:dark:bg-gray-300 focus:dark:bg-gray-300"
-                >
-                  <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current">
-                    <path
-                      d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z"
-                    ></path>
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td class="px-3 text-2xl font-medium dark:text-gray-600"></td>
-              <td class="px-3 py-2">
-                <p>Richie Allen</p>
-              </td>
-              <td class="px-3 py-2">
-                <span>Geothermal Technician</span>
-              </td>
-              <td class="px-3 py-2">
-                <p>Enseignement en matinée plutôt qu’en après-midi.</p>
-                <p>
-                  Avoir du temps pour préparer les cours entre deux classes.
-                </p>
-                <p>
-                  Ne pas enseigner deux matières différentes dans une même
-                  journée.
-                </p>
-              </td>
-              <td class="px-3 py-2"></td>
-              <td class="px-3 py-2"></td>
-              <td class="px-3 py-2">
-                <button
-                  type="button"
-                  title="Open details"
-                  class="p-1 rounded-full dark:text-gray-400 hover:dark:bg-gray-300 focus:dark:bg-gray-300"
-                >
-                  <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current">
-                    <path
-                      d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z"
-                    ></path>
-                  </svg>
-                </button>
-              </td>
-            </tr>
-          </tbody> -->
-          <tbody class="border-b dark:bg-gray-50 dark:border-gray-300">
-            <tr>
-              <td class="px-3 text-2xl font-medium dark:text-gray-600">B</td>
-              <td class="px-3 py-2">
-                <p>Alex Bridges</p>
-              </td>
-              <td class="px-3 py-2">
-                <span>Administrative Services Manager</span>
-              </td>
-              <td class="px-3 py-2">
-                <p>Un jour libre dans la semaine.</p>
-                <p>Cours regroupés sur des jours consécutifs.</p>
-                <p>Pas de cours lourds à des horaires tardifs.</p>
-              </td>
-              <td class="px-3 py-2"></td>
-              <td class="px-3 py-2"></td>
-              <td class="px-3 py-2">
-                <button
-                  type="button"
-                  title="Open details"
-                  class="p-1 rounded-full dark:text-gray-400 hover:dark:bg-gray-300 focus:dark:bg-gray-300"
-                >
-                  <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current">
-                    <path
-                      d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z"
-                    ></path>
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td class="px-3 text-2xl font-medium dark:text-gray-600"></td>
-              <td class="px-3 py-2">
-                <p>Lynette Brown</p>
-              </td>
-              <td class="px-3 py-2">
-                <span>Camera Operator</span>
-              </td>
-              <td class="px-3 py-2">
-                <p></p>
-                <p></p>
-                <p></p>
-                <p></p>
-              </td>
-              <td class="px-3 py-2">
-                <p></p>
-              </td>
-              <td class="px-3 py-2"></td>
-              <td class="px-3 py-2">
-                <button
-                  type="button"
-                  title="Open details"
-                  class="p-1 rounded-full dark:text-gray-400 hover:dark:bg-gray-300 focus:dark:bg-gray-300"
-                >
-                  <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current">
-                    <path
-                      d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z"
-                    ></path>
-                  </svg>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-          <tbody class="border-b dark:bg-gray-50 dark:border-gray-300">
-            <tr>
-              <td class="px-3 text-2xl font-medium dark:text-gray-600">C</td>
-              <td class="px-3 py-2">
-                <p>Mariah Claxton</p>
-              </td>
-              <td class="px-3 py-2">
-                <span>Nuclear Technician</span>
-              </td>
-              <td class="px-3 py-2">
-                <p></p>
-                <p></p>
-                <p></p>
-                <p></p>
-              </td>
-              <td class="px-3 py-2"></td>
-              <td class="px-3 py-2"></td>
-              <td class="px-3 py-2">
-                <button
-                  type="button"
-                  title="Open details"
-                  class="p-1 rounded-full dark:text-gray-400 hover:dark:bg-gray-300 focus:dark:bg-gray-300"
-                >
-                  <svg viewBox="0 0 24 24" class="w-4 h-4 fill-current">
-                    <path
-                      d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z"
-                    ></path>
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td class="px-3 text-2xl font-medium dark:text-gray-600"></td>
-              <td class="px-3 py-2">
-                <p>Hermila Craig</p>
-              </td>
-              <td class="px-3 py-2">
-                <span>Production Engineer</span>
-              </td>
-              <td class="px-3 py-2">
-                <p></p>
-                <p></p>
-                <p></p>
-              </td>
-              <td class="px-3 py-2"></td>
+              <tr v-for="module in intervenant.modules" :key="module">
+                <td class="px-3 py-2">
+                  <p>{{ module.name }}</p>
+                  <p>{{ module.preferences }}</p>
+                </td>
+                <td class="px-3 py-2">
+                  <p v-for="preference in module.preferences" :key="preference">{{ preference }}</p>
+                </td>
+              </tr>
               <td class="px-3 py-2"></td>
               <td class="px-3 py-2">
                 <button
@@ -305,12 +139,46 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
+import router from "../router";
 import { useUserStore } from "../stores/user-store";
 
 const userStore = useUserStore();
 const schoolId = userStore.schoolId || localStorage.getItem("schoolId");
+console.log("schoolId:", schoolId);
 const intervenants = ref([]);
+const selectedIntervenant = ref({});
+const selectedModule = ref({});
+const preferences = ref("");
+
+watch(selectedIntervenant, () => {
+  selectedModule.value = selectedIntervenant.value.modules;
+});
+
+const createPref = async () => {
+  try {
+    console.log("selectedIntervenant:", typeof(selectedIntervenant.value.id), selectedIntervenant.value.id);
+    console.log("selectedModule:", typeof(selectedModule.value.id), selectedModule.value.id);
+    console.log("preferences:", typeof(preferences.value), preferences.value);
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}userModules`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: selectedIntervenant.value.id,
+        moduleId: selectedModule.value.id,
+        settings: preferences.value,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error("Something went wrong, request failed!");
+    }
+    router.go();  
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 const fetchGetData = async (endpoint) => {
   try {
@@ -328,6 +196,35 @@ const fetchGetData = async (endpoint) => {
 
 onMounted(async () => {
   intervenants.value = await fetchGetData(`users/intervenants/${schoolId}`);
+
+  intervenants.value = intervenants.value.map((intervenant) => {
+    console.log("intervenant:", intervenant.firstname, intervenant.lastname,":",intervenant.id, intervenant.modules);
+    intervenant.modules = intervenant.modules.map((module) => {
+      console.log("module:", module.name, ":", module.preferences);
+      if (!module.preferences) {
+        module.preferences = [];
+        console.log("changedModule:", module.name, ":", module.preferences);
+        return module;
+      }
+      if (!module.preferences.includes(",")) {
+        const prefs = [module.preferences];
+        module.preferences = prefs.map((preference) => preference.trim());
+        console.log("prefs sans virgule:", prefs);
+        console.log("changedModule:", module);
+        return module;
+      }
+      console.log("avec contenu et virgule:", module.preferences);
+      const prefs = module.preferences.split(",");
+      // met dans le tableau prefs les éléments de module.preferences séparés par une virgule puis les trim et les met dans module.preferences
+      // prefs.push(module.preferences.split(","));
+      // module.preferences = prefs.map((preference) => preference.trim());
+
+      console.log("prefs avec virgule:", prefs);
+      console.log("changedModule:", module);
+      return module;
+    });
+    return intervenant;
+  });
   console.log("intervenants:", intervenants);
 });
 </script>
