@@ -8,5 +8,5 @@
 </template>
 
 <script setup>
-import CalendrierDisponibilite from '../../components/CalendrierDisponibilite.vue'
-</script> 
+  import CalendrierDisponibilite from '../../components/CalendrierDisponibilite.vue'
+</script>

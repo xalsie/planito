@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <div class="p-4 border-b border-gray-200">
+    <!-- <div class="p-4 border-b border-gray-200">
       <div class="space-y-4">
         <div v-show="schools.length > 0">
           <label class="block text-sm font-medium text-gray-700 mb-1">École</label>
@@ -43,13 +43,8 @@
             </option>
           </select>
         </div>
-
-        <!-- <button @click="handleValidation" :disabled="!selectedModule"
-          class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-          Valider la sélection
-        </button> -->
       </div>
-    </div>
+    </div> -->
 
     <div class="divide-y divide-gray-200">
       <ul class="pt-4 pb-2 space-y-1">
@@ -128,13 +123,13 @@
   })
 
   // Données pour les sélecteurs
-  const schools = ref([])
-  const classes = ref([])
-  const modules = ref([])
+  // const schools = ref([])
+  // const classes = ref([])
+  // const modules = ref([])
 
-  const selectedSchool = ref('')
-  const selectedClass = ref('')
-  const selectedModule = ref('')
+  // const selectedSchool = ref('')
+  // const selectedClass = ref('')
+  // const selectedModule = ref('')
 
   // Filtres pour les sélecteurs
   // const filteredClasses = computed(() => {
@@ -150,77 +145,72 @@
   //     : []
   // )
 
-  // Chargement des données
-  async function fetchData() {
-    await fetchEvent()
-    await fetchSchool()
-    await fetchClasses()
-  }
+  // async function fetchSchool() {
+  //   const token = localStorage.getItem('token')
+  //   const userId = localUser.id
 
-  async function fetchSchool() {
-    const token = localStorage.getItem('token')
-    const userId = localUser.id
+  //   try {
+  //     const schoolsRes = await fetch(`http://localhost:3000/users/${userId}/schools`, {
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`
+  //       }
+  //     })
 
-    try {
-      const schoolsRes = await fetch(`http://localhost:3000/users/${userId}/schools`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+  //     if (!schoolsRes.ok) {
+  //       throw new Error('Erreur lors du chargement des écoles')
+  //     }
 
-      if (!schoolsRes.ok) {
-        throw new Error('Erreur lors du chargement des écoles')
-      }
+  //     schools.value = await schoolsRes.json()
+  //   } catch (error) {
+  //     console.error('Erreur:', error)
+  //   }
+  // }
 
-      schools.value = await schoolsRes.json()
-    } catch (error) {
-      console.error('Erreur:', error)
-    }
-  }
+  // async function fetchClasses() {
+  //   const token = localStorage.getItem('token')
+  //   const userId = localUser.id
 
-  async function fetchClasses() {
-    const token = localStorage.getItem('token')
-    const userId = localUser.id
+  //   try {
+  //     const classesRes = await fetch(`http://localhost:3000/users/${userId}/classes/${selectedSchool.value? selectedSchool.value : ""}`, {
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`
+  //       }
+  //     })
 
-    try {
-      const classesRes = await fetch(`http://localhost:3000/users/${userId}/classes/${selectedSchool.value? selectedSchool.value : ""}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+  //     if (!classesRes.ok) {
+  //       throw new Error('Erreur lors du chargement des classes')
+  //     }
 
-      if (!classesRes.ok) {
-        throw new Error('Erreur lors du chargement des classes')
-      }
+  //     classes.value = await classesRes.json()
 
-      classes.value = await classesRes.json()
+  //     const classe = [...classes.value]
 
-      const classe = [...classes.value]
+  //     classe.forEach(async (moduleClass) => {
+  //       moduleClass.moduleClasses.forEach(async (moduleClass) => {
+  //         modules.value.push(moduleClass.module)
+  //       })
+  //     })
+  //   } catch (error) {
+  //     console.error('Erreur:', error)
+  //   }
+  // }
 
-      classe.forEach(async (moduleClass) => {
-        moduleClass.moduleClasses.forEach(async (moduleClass) => {
-          modules.value.push(moduleClass.module)
-        })
-      })
-    } catch (error) {
-      console.error('Erreur:', error)
-    }
-  }
-
-  async function fetchEvent() {
-  }
+  // async function fetchEvent() {
+  // }
 
   // watch(selectedSchool, () => {
-  //   selectedClass.value = ''
-  //   selectedModule.value = ''
+  //   console.log(selectedSchool.value)
   // })
 
   // watch(selectedClass, () => {
-  //   selectedModule.value = ''
+  //   console.log(selectedClass.value)
+  // })
+
+  // watch(selectedModule, () => {
+  //   console.log(selectedModule.value)
   // })
 
   onMounted(() => {
-    fetchData()
   })
 
   const showImportModal = ref(false)
@@ -230,6 +220,12 @@
     {
       label: 'Calendrier',
       routeName: 'intervenant-calendrier',
+      type: 'link',
+      icon: '<path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"/>'
+    },
+    {
+      label: 'Disponibilités',
+      routeName: 'intervenant-disponibilite',
       type: 'link',
       icon: '<path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"/>'
     },
@@ -256,13 +252,13 @@
   }
 
   const handleValidation = () => {
-    if (selectedSchool.value && selectedClass.value && selectedModule.value) {
-      // Vous pouvez ajouter ici la logique pour gérer la validation
-      console.log('Sélections validées:', {
-        école: selectedSchool.value,
-        classe: selectedClass.value,
-        module: selectedModule.value
-      })
-    }
+    // if (selectedSchool.value && selectedClass.value && selectedModule.value) {
+    //   // Vous pouvez ajouter ici la logique pour gérer la validation
+    //   console.log('Sélections validées:', {
+    //     école: selectedSchool.value,
+    //     classe: selectedClass.value,
+    //     module: selectedModule.value
+    //   })
+    // }
   }
 </script>
