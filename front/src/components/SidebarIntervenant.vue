@@ -49,64 +49,37 @@
     <div class="divide-y divide-gray-200">
       <ul class="pt-4 pb-2 space-y-1">
         <li v-for="(item, index) in menuItems" :key="index">
-          <router-link
-            v-if="item.type === 'link'"
-            :to="{ name: item.routeName }"
-            class="flex items-center p-3 space-x-3 rounded-md hover:bg-blue-50 text-gray-600 hover:text-blue-600 transition-colors font-poppins"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-              class="w-5 h-5 fill-current"
-              v-html="item.icon"
-            ></svg>
+          <router-link v-if="item.type === 'link'" :to="{ name: item.routeName }"
+            class="flex items-center p-3 space-x-3 rounded-md hover:bg-blue-50 text-gray-600 hover:text-blue-600 transition-colors font-poppins">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 fill-current"
+              v-html="item.icon"></svg>
             <span>{{ item.label }}</span>
           </router-link>
-          <button
-            v-else
-            @click="openImportModal"
-            class="flex items-center p-3 space-x-3 rounded-md hover:bg-blue-50 text-gray-600 hover:text-blue-600 transition-colors font-poppins w-full"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-              class="w-5 h-5 fill-current"
-              v-html="item.icon"
-            ></svg>
+          <button v-else @click="openImportModal"
+            class="flex items-center p-3 space-x-3 rounded-md hover:bg-blue-50 text-gray-600 hover:text-blue-600 transition-colors font-poppins w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 fill-current"
+              v-html="item.icon"></svg>
             <span>{{ item.label }}</span>
           </button>
         </li>
       </ul>
     </div>
 
-    <div
-      v-if="showImportModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
+    <div v-if="showImportModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg p-6 w-96">
         <h2 class="text-xl font-bold mb-4">Import de Calendrier</h2>
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Lien du calendrier</label
-          >
-          <input
-            v-model="calendarUrl"
-            type="text"
+          <label class="block text-sm font-medium text-gray-700 mb-1">Lien du calendrier</label>
+          <input v-model="calendarUrl" type="text"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Entrez l'URL du calendrier"
-          />
+            placeholder="Entrez l'URL du calendrier" />
         </div>
         <div class="flex justify-end space-x-3">
-          <button
-            @click="closeImportModal"
-            class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-          >
+          <button @click="closeImportModal" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
             Annuler
           </button>
-          <button
-            @click="importCalendar"
-            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
+          <button @click="handleImportURL"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
             Importer
           </button>
         </div>
@@ -114,18 +87,12 @@
     </div>
 
     <div class="absolute bottom-0 w-64 p-6 border-t border-gray-200 bg-white">
-      <button
-        @click="handleLogout"
-        class="flex items-center space-x-3 text-gray-600 hover:text-blue-600 transition-colors font-poppins"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 512 512"
-          class="w-5 h-5 fill-current"
-        >
+      <button @click="handleLogout"
+        class="flex items-center space-x-3 text-gray-600 hover:text-blue-600 transition-colors font-poppins">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5 fill-current">
           <path
-            d="M440,424V88H352V13.005L88,58.522V424H16v32h86.9L352,490.358V120h56V456h88V424ZM320,453.642,120,426.056V85.478L320,51Z"
-          ></path>
+            d="M440,424V88H352V13.005L88,58.522V424H16v32h86.9L352,490.358V120h56V456h88V424ZM320,453.642,120,426.056V85.478L320,51Z">
+          </path>
           <rect width="32" height="64" x="256" y="232"></rect>
         </svg>
         <span>Déconnexion</span>
@@ -242,7 +209,7 @@ const user = ref({
 //   console.log(selectedModule.value)
 // })
 
-onMounted(() => {});
+onMounted(() => { });
 
 const showImportModal = ref(false);
 const calendarUrl = ref("");
