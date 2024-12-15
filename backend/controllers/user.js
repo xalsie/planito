@@ -119,7 +119,7 @@ exports.findIntervenantBySchool = async (req, res, next) => {
                   attributes: ["name"],
                 },
               ],
-              attributes: ["module_id", "settings"],
+              attributes: ["id", "module_id", "settings"],
             },
             {
               model: ModuleClass,
@@ -142,12 +142,12 @@ exports.findIntervenantBySchool = async (req, res, next) => {
       const roles = user.roles.join(", ");
       const modules = user.userModules?.map((userModule) => {
         return {
-          id: userModule.module_id,
+          id: userModule.id,
+          moduleId: userModule.module_id,
           name: userModule.module.name,
           preferences: userModule.settings || [],
         };
       });
-      console.log("modules:", modules);
 
       const classes = Array.from(
         new Set(
