@@ -32,7 +32,8 @@
                 <button @click="isOpen = false" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
                     Annuler
                 </button>
-                <button @click="saveUnavailability" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <button @click="saveUnavailability"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                     Enregistrer
                 </button>
             </div>
@@ -169,7 +170,7 @@ onMounted(async () => {
         title: event.title,
         start: event.start,
         end: event.end,
-        editable: (event.type === 'unavailability'? true : false),
+        editable: (event.type === 'unavailability' ? true : false),
         color: ((event) => {
             if (event.type === 'course') {
                 return '#22c55e'
@@ -238,7 +239,7 @@ const saveUnavailability = async () => {
             title: data.title,
             start: data.start,
             end: data.end,
-            editable: false,
+            editable: true,
             color: '#ef4444',
             extendedProps: {
                 id: data.id,
@@ -290,7 +291,7 @@ const updateEvent = async (id, body) => {
 </script>
 
 <style>
-    .fc-timegrid-slot {
-        height: 3em !important;
-    }
+.fc-timegrid-slot {
+    height: 3em !important;
+}
 </style>

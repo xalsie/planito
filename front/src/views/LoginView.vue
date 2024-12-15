@@ -74,14 +74,16 @@ const login = async () => {
 		}
 
 		if (userStore.schoolId) {
+			localStorage.setItem("schoolId", userStore.schoolId)
 			localStorage.setItem("token", userStore.token)
+
 			localStorage.setItem("user", JSON.stringify(userStore.user))
-			router.push({name: "calendar"});
+			router.push({ name: "calendar" });
 		}
 		if (userStore.user.id) {
 			localStorage.setItem("token", userStore.token)
 			localStorage.setItem("user", JSON.stringify(userStore.user))
-			router.push({name: "intervenant-calendrier"});
+			router.push({ name: "intervenant-calendrier" });
 		}
 	} catch (error) {
 		console.error("Login failed:", error);

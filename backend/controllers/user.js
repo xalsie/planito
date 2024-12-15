@@ -143,11 +143,14 @@ exports.findIntervenantBySchool = async (req, res, next) => {
 
       const roles = user.roles.join(", ");
 
-      const modules = Array.from(
-        new Set(
-          user.userModules?.map((userModule) => userModule.module.name) || []
-        )
-      ).join(", ");
+      const modules = user.userModules?.map((userModule) => {
+        return {
+          id: userModule.id,
+          moduleId: userModule.module_id,
+          name: userModule.module.name,
+          preferences: userModule.settings || [],
+        };
+      });
 
       const classes = Array.from(
         new Set(
