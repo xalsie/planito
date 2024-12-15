@@ -142,14 +142,12 @@ exports.findIntervenantBySchool = async (req, res, next) => {
       const user = userSchool.user;
 
       const roles = user.roles.join(", ");
-      const modules = user.userModules?.map((userModule) => {
-        return {
-          id: userModule.id,
-          moduleId: userModule.module_id,
-          name: userModule.module.name,
-          preferences: userModule.settings || [],
-        };
-      });
+
+      const modules = Array.from(
+        new Set(
+          user.userModules?.map((userModule) => userModule.module.name) || []
+        )
+      ).join(", ");
 
       const classes = Array.from(
         new Set(
@@ -209,7 +207,7 @@ exports.findSchoolsByUser = async (req, res, next) => {
     }
     next(err);
   }
-}
+};
 
 exports.findClasses = async (req, res, next) => {
   try {
@@ -234,8 +232,8 @@ exports.findClasses = async (req, res, next) => {
               attributes: ["name", "id"],
             },
           ],
-        }
-      ]
+        },
+      ],
     });
 
     if (!classes) {
@@ -251,7 +249,7 @@ exports.findClasses = async (req, res, next) => {
     }
     next(err);
   }
-}
+};
 
 exports.findClassesBySchool = async (req, res, next) => {
   try {
@@ -286,8 +284,8 @@ exports.findClassesBySchool = async (req, res, next) => {
               attributes: ["name", "id"],
             },
           ],
-        }
-      ]
+        },
+      ],
     });
 
     if (!classes) {
@@ -303,4 +301,4 @@ exports.findClassesBySchool = async (req, res, next) => {
     }
     next(err);
   }
-}
+};

@@ -63,5 +63,11 @@ const deleteIntervenant = async () => {
 
 onMounted(async () => {
     rows.value = await fetchIntervenantsBySchool();
+
+    rows.value = rows.value.map((intervenant) => {
+        intervenant.modules = intervenant.modules.map((module) => module.name).join(', ');
+        return intervenant;
+    });
+
 })
 </script>
