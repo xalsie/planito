@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const UserSchool = require("../models/userSchool");
 const bcrypt = require("bcryptjs");
 
 exports.login = async (req, res, next) => {
@@ -18,10 +19,23 @@ exports.login = async (req, res, next) => {
       error.statusCode = 422;
       throw error;
     }
-    
+
     user.password = undefined;
 
-    res.status(200).json({ token: user.id, user: user });
+    if (user.roles.includes("ROLE_STAFF")) {
+      const userSchool = await UserSchool.findOne({
+        where: { user_id: user.id },
+      });
+      return res.status(200).json({
+        token: user.id,
+        user: user,
+        schoolId: userSchool.school_id,
+      });
+    }
+    return res.status(200).json({
+      token: user.id,
+      user: user
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

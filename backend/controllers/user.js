@@ -1,11 +1,13 @@
 const Module = require("../models/module");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const UserSchool = require("../models/userSchool");
 const UserModule = require("../models/userModule");
 const ModuleClass = require("../models/moduleClass");
+const School = require("../models/school");
 const Class = require("../models/class");
+
 exports.create = async (req, res, next) => {
   try {
     const { firstName, lastName, email, password, roles } = req.body;
@@ -104,7 +106,7 @@ exports.findIntervenantBySchool = async (req, res, next) => {
       include: [
         {
           model: User,
-          attributes: ["lastName", "firstName", "email", "roles"],
+          attributes: ["id", "lastName", "firstName", "email", "roles"],
           where: {
             roles: {
               [Op.contains]: ["ROLE_INTERVENANT"],
@@ -152,6 +154,7 @@ exports.findIntervenantBySchool = async (req, res, next) => {
         )
       ).join(", ");
       return {
+        id: user.id,
         lastname: user.lastName,
         firstname: user.firstName,
         email: user.email,
@@ -168,3 +171,133 @@ exports.findIntervenantBySchool = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.findSchoolsByUser = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+
+    if (!userId) {
+      const error = new Error("User ID is required.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const schools = await School.findAll({
+      include: [
+        {
+          model: UserSchool,
+          where: {
+            user_id: userId,
+          },
+        },
+      ],
+    });
+
+    if (!schools) {
+      const error = new Error("Could not find schools.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json(schools);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
+
+exports.findClasses = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+
+    if (!userId) {
+      const error = new Error("User ID is required.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const classes = await Class.findAll({
+      include: [
+        {
+          model: ModuleClass,
+          where: {
+            user_id: userId,
+          },
+          include: [
+            {
+              model: Module,
+              attributes: ["name", "id"],
+            },
+          ],
+        }
+      ]
+    });
+
+    if (!classes) {
+      const error = new Error("Could not find classes.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json(classes);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
+
+exports.findClassesBySchool = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const schoolId = req.params.schoolId;
+
+    if (!userId) {
+      const error = new Error("User ID is required.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    // if (!schoolId) {
+    //   const error = new Error("School ID is required.");
+    //   error.statusCode = 400;
+    //   throw error;
+    // }
+
+    const classes = await Class.findAll({
+      // where: {
+      //   school_id: schoolId,
+      // },
+      include: [
+        {
+          model: ModuleClass,
+          where: {
+            user_id: userId,
+          },
+          include: [
+            {
+              model: Module,
+              attributes: ["name", "id"],
+            },
+          ],
+        }
+      ]
+    });
+
+    if (!classes) {
+      const error = new Error("Could not find classes.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json(classes);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}

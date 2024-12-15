@@ -54,6 +54,37 @@ const create = async (req, res, next) => {
   }
 };
 
+const createAvailability = async (req, res, next) => {
+  const { classId, type, start, end } = req.body;
+  try {
+    const event = await Event.create({
+      class_id: classId,
+      type,
+      start,
+      end,
+    });
+    res.sendStatus(201);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const getAvailabilities = async (req, res, next) => {
+  const { classId } = req.params;
+  try {
+    const whereObj = { type: EventType.AVAILABILITY };
+    if (classId) whereObj.class_id = classId;
+    const availabilities = await Event.findAll({
+      attributes: ["id", "type", "start", "end", "class_id"],
+      where: whereObj,
+    });
+
+    res.status(200).json(availabilities);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 const updateById = async (req, res, next) => {
   const eventId = req.params.eventId;
   const { title, description, type, start, end } = req.body;
@@ -140,7 +171,6 @@ const importIcalFromURL = async (req, res, next) => {
       throw error;
     }
     const { url, userId } = req.body;
-    console.log("url", url);
 
     await ical.fromURL(url, {}, async function (err, data) {
       if (err) {
@@ -148,35 +178,28 @@ const importIcalFromURL = async (req, res, next) => {
         error.statusCode = 500;
         throw error;
       }
-      let count = 0;
       const currentDate = new Date();
-      // 31 Décembre de l'année prochaine
       const nextYear = new Date(currentDate.getFullYear() + 1, 11, 31);
-      console.log("data");
 
       for (let k in data) {
         if (data.hasOwnProperty(k)) {
           const ev = data[k];
+          console.log("Event: " + ev.summary);
 
+          if (
+            ev.summary === "osuvghiliy" ||
+            ev.summary === "izefubd" ||
+            ev.summary === "okokok"
+          ) {
+            console.log("Event1: " + ev.type);
+          }
           if (ev.type === "VEVENT") {
             const startDate = new Date(ev.start);
             const endDate = new Date(ev.end);
-            if (startDate >= currentDate)
-              console.log(
-                "Date",
-                ++count,
-                ":",
-                startDate,
-                " >= ",
-                currentDate,
-                " = ",
-                startDate >= currentDate
-              );
-            else ++count;
 
             if (startDate >= currentDate && startDate <= nextYear) {
-              console.log("before create");
-              const event = Event.create({
+              console.log("Event2: " + ev.summary);
+              const event = await Event.create({
                 title: ev.summary || "No title",
                 description: ev.description || "No description",
                 type: EventType.UNAVAILABILITY,
@@ -185,14 +208,12 @@ const importIcalFromURL = async (req, res, next) => {
                 user_id: userId,
                 isImported: true,
               });
-              console.log("event");
-              res.status(201).json(event).end();
-              return;
             }
           }
         }
       }
-      console.log("itérations: ", count);
+      res.status(201).json("events imported");
+      return;
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -235,49 +256,6 @@ const findEventsBySchoolByClass = async (req, res, next) => {
         {
           model: User,
           attributes: ["id", "firstName", "lastName"],
-        },
-      ],
-    });
-    if (!events) {
-      res.status(404).json("Event not found");
-      return;
-    }
-    res.status(200).json(events);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
-
-const findIntervenantEvents = async (req, res, next) => {
-  const userId = req.params.intervenantId;
-  
-  try {
-    const events = await Event.findAll({
-      attributes: ["id", "title", "description", "type", "start", "end"],
-      where: {
-        type: {
-          [Op.in]: [EventType.COURSE, EventType.EXAM, EventType.UNAVAILABILITY],
-        },
-      },
-      include: [
-        {
-          model: Module,
-          attributes: ["name"],
-        },
-        {
-          model: Class,
-          attributes: ["id", "name"],
-        },
-        {
-          model: Room,
-          attributes: ["id", "name"],
-        },
-        {
-          model: User,
-          attributes: ["id", "firstName", "lastName"],
-          where: {
-            id: userId,
-          },
         },
       ],
     });
@@ -337,6 +315,168 @@ const findIntervenantEventsBySchool = async (req, res, next) => {
   }
 };
 
+const findIntervenantEvents = async (req, res, next) => {
+  const userId = req.params.intervenantId;
+
+  try {
+    const events = await Event.findAll({
+      attributes: ["id", "title", "description", "type", "start", "end"],
+      where: {
+        type: {
+          [Op.in]: [EventType.COURSE, EventType.EXAM, EventType.UNAVAILABILITY],
+        },
+      },
+      include: [
+        {
+          model: Module,
+          attributes: ["name"],
+        },
+        {
+          model: Class,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Room,
+          attributes: ["id", "name"],
+        },
+        {
+          model: User,
+          attributes: ["id", "firstName", "lastName"],
+          where: {
+            user_id: userId,
+          },
+        },
+      ],
+    });
+    if (!events) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const findAvailabilityEventsBySchool = async (req, res, next) => {
+  const schoolId = req.params.schoolId;
+  try {
+    const events = await Event.findAll({
+      attributes: ["id", "type", "start", "end"],
+      where: {
+        type: EventType.AVAILABILITY,
+      },
+      include: [
+        {
+          model: Class,
+          attributes: ["name"],
+          where: {
+            school_id: schoolId,
+          },
+        },
+        {
+          model: Room,
+          attributes: ["id", "name"],
+        },
+        {
+          model: User,
+          attributes: ["id", "firstName", "lastName"],
+        },
+      ],
+    });
+
+    if (!events) {
+      const error = new Error("Could not find events.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json(events);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+const findAvailabilityEventsBySchoolByClass = async (req, res, next) => {
+  const schoolId = req.params.schoolId;
+  const classId = req.params.classId;
+  try {
+    const events = await Event.findAll({
+      attributes: ["id", "type", "start", "end"],
+      where: {
+        type: EventType.AVAILABILITY,
+      },
+      include: [
+        {
+          model: Class,
+          attributes: ["name"],
+          where: {
+            school_id: schoolId,
+            id: classId,
+          },
+        },
+        {
+          model: Class,
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+    if (!events) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    res.status(200).json(events);
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+const findEventsByUser = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+
+    if (!userId) {
+      const error = new Error("User ID is required.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const events = await Event.findAll({
+      attributes: ["id", "title", "description", "type", "start", "end"],
+      where: {
+        user_id: userId,
+      },
+      include: [
+        {
+          model: Module,
+          attributes: ["name"],
+        },
+        {
+          model: Class,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Room,
+          attributes: ["id", "name"],
+        }
+      ],
+    });
+    if (!events) {
+      res.status(404).json("Event not found");
+      return;
+    }
+    res.status(200).json(events);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 module.exports = {
   find,
   findById,
@@ -348,4 +488,9 @@ module.exports = {
   findEventsBySchoolByClass,
   findIntervenantEventsBySchool,
   findIntervenantEvents,
+  findAvailabilityEventsBySchool,
+  findAvailabilityEventsBySchoolByClass,
+  findEventsByUser,
+  createAvailability,
+  getAvailabilities,
 };

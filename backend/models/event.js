@@ -32,11 +32,11 @@ const Event = sequelize.define(
     },
     title: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     description: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     user_id: {
       type: DataTypes.UUID,

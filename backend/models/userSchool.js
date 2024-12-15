@@ -27,7 +27,7 @@ const UserSchool = sequelize.define(
       beforeValidate: (userSchool, options) => {
         userSchool.id = uuidv4();
       },
-    },
+    }
   }
 );
 

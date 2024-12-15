@@ -36,16 +36,14 @@ const School = sequelize.define(
     user_id: {
       type: DataTypes.UUID,
       allowNull: false,
-    },
-    
-   
+    }
   },
   {
     hooks: {
       beforeValidate: (school, options) => {
         school.id = uuidv4();
       },
-    },
+    }
   }
 );
 
